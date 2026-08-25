@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en" class="is-loading">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Curtains — PAJOMAR</title>
+  <link rel="icon" href="assets/logo.jpg" type="image/jpeg">
+  <link rel="stylesheet" href="css/main.css">
+</head>
+<body data-i18n-title="page.title.curtains">
+
+  <div id="page-loader" class="page-loader" role="status" aria-label="PAJOMAR" aria-busy="true">
+    <div class="page-loader__inner" aria-hidden="true">
+      <span class="page-loader__ring"></span>
+      <span class="page-loader__ring page-loader__ring--delay"></span>
+      <div class="page-loader__mark"><span class="page-loader__letter">P</span></div>
+      <div class="page-loader__folds"><span></span><span></span><span></span><span></span><span></span></div>
+    </div>
+  </div>
+
+  <div class="page-hero">
+    <div class="container">
+      <h1 class="display-lg" data-i18n="curtains.title">Curtains</h1>
+      <p data-i18n="curtains.desc">Discover elegant curtain solutions crafted from premium fabrics and designed to transform your space.</p>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="listing-layout">
+      <aside class="filter-sidebar filter-panel" id="filter-sidebar" aria-label="Product filters"></aside>
+      <div class="listing-main">
+        <div class="listing-toolbar">
+          <span class="listing-count" id="product-count">...</span>
+          <div class="listing-controls">
+            <button class="filter-mobile-btn" id="filter-mobile-btn" aria-label="Open filters">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 6h16M7 12h10M10 18h4"/></svg>
+              <span data-i18n="filter.filters">Filters</span>
+            </button>
+            <select class="sort-select" id="sort-select" aria-label="Sort products">
+              <option value="featured" data-i18n="sort.featured">Featured</option>
+              <option value="newest" data-i18n="sort.newest">Newest</option>
+              <option value="popular" data-i18n="sort.popular">Most Popular</option>
+            </select>
+          </div>
+        </div>
+        <div class="active-filters" id="active-filters"></div>
+        <div class="product-grid" id="product-grid"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="filter-drawer-overlay" id="filter-drawer-overlay"></div>
+  <aside class="filter-drawer" id="filter-drawer" aria-label="Filter drawer">
+    <div class="filter-drawer-header">
+      <h3 data-i18n="filter.filters">Filters</h3>
+      <button id="filter-drawer-close" aria-label="Close filters">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </div>
+    <div class="filter-drawer-body filter-panel" id="filter-drawer-body"></div>
+    <div class="filter-drawer-footer">
+      <button class="btn btn-outline clear-filters-btn" data-i18n="filter.clear">Clear All</button>
+      <button class="btn btn-primary" id="filter-apply" data-i18n="filter.apply">Apply Filters</button>
+    </div>
+  </aside>
+
+  <script src="js/images-manifest.js"></script>
+  <script src="js/image-lib.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/i18n.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const filterHTML = getFilterHTML();
+      document.getElementById('filter-sidebar').innerHTML = filterHTML;
+      document.getElementById('filter-drawer-body').innerHTML = filterHTML;
+      initCurtainsPage();
+    });
+  </script>
+</body>
+</html>

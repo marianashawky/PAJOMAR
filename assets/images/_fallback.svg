@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600">
+  <rect width="800" height="600" fill="#e8e4df"/>
+  <rect x="280" y="180" width="240" height="180" rx="8" fill="#d4cfc8"/>
+  <circle cx="340" cy="240" r="28" fill="#c5bfb6"/>
+  <path d="M300 320l60-50 45 35 75-90 120 105H300z" fill="#b8b0a6"/>
+  <text x="400" y="420" text-anchor="middle" fill="#8a8278" font-family="system-ui,sans-serif" font-size="18">Add photos to assets/images/</text>
+</svg>

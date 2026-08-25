@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none" aria-hidden="true">
+  <rect width="200" height="200" fill="#000"/>
+  <circle cx="100" cy="58" r="36" stroke="#8FC4DC" stroke-width="2.5"/>
+  <!-- window frame -->
+  <path d="M88 42v32M112 42v32M76 58h48" stroke="#8FC4DC" stroke-width="2" stroke-linecap="round"/>
+  <!-- curtains -->
+  <path d="M68 40c-2 8-2 20 0 36 6-4 12-10 14-18 2-8-2-14-14-18z" fill="#6BA8C4" opacity="0.9"/>
+  <path d="M132 40c2 8 2 20 0 36-6-4-12-10-14-18-2-8 2-14 14-18z" fill="#6BA8C4" opacity="0.9"/>
+  <text x="100" y="128" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-weight="700" font-size="28" fill="#3DB4E0" letter-spacing="4">PAJOMAR</text>
+  <text x="100" y="152" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-weight="400" font-size="9" fill="#8FC4DC" letter-spacing="3.2">SHUTTERS &amp; CURTAINS</text>
+</svg>
