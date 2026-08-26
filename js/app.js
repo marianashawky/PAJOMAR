@@ -656,19 +656,29 @@
     const id = params.get('id');
     const startImg = parseInt(params.get('img') || '0', 10);
     const product = PAJOMAR.products.find(p => p.id === id)
-      || PAJOMAR.products.find(p => p.imageFolder === id);
+      || PAJOMAR.products.find(p => p.imageFolder === id)
+      || (() => {
+        const listing = (PAJOMAR.listingItems || []).find(p => p.id === id);
+        if (!listing) return null;
+        return PAJOMAR.products.find(p => p.id === listing.folderId || p.imageFolder === listing.folderId) || listing;
+      })();
     const container = document.getElementById('product-detail');
     if (!product || !container) {
       if (container) container.innerHTML = '<p class="empty-state">' + t('product.notFound') + '</p>';
       return;
     }
 
+    const startFromListing = (PAJOMAR.listingItems || []).find(p => p.id === id);
+    const galleryStart = startFromListing && Number.isFinite(startFromListing.galleryIndex)
+      ? startFromListing.galleryIndex
+      : startImg;
+
     const label = folderDisplayName(product.imageFolder || product.id);
     document.title = label + ' — PAJOMAR';
 
     const gallery = product.gallery || [product.image, product.imageSecondary].filter(Boolean);
     const uniqueGallery = [...new Set(gallery)];
-    const activeIndex = Math.min(Math.max(startImg, 0), uniqueGallery.length - 1);
+    const activeIndex = Math.min(Math.max(galleryStart, 0), uniqueGallery.length - 1);
 
     container.innerHTML = `
       <div class="product-gallery">
@@ -704,10 +714,35 @@
       });
     });
 
-    const related = PAJOMAR.products.filter(p => p.id !== product.id).slice(0, 4);
+    const currentFolder = product.imageFolder || product.folderId || product.id;
+    let related = (PAJOMAR.products || []).filter(p => (p.imageFolder || p.id) !== currentFolder);
+
+    /* Fill from listing items if folders are few */
+    if (related.length < 4) {
+      const extra = (PAJOMAR.listingItems || []).filter(p => {
+        const folder = p.folderId || p.imageFolder || p.id;
+        return folder !== currentFolder;
+      });
+      related = [...related, ...extra];
+    }
+
+    const seen = new Set();
+    related = related.filter(p => {
+      const key = p.folderId || p.imageFolder || p.id;
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    }).slice(0, 4);
+
     const relatedGrid = document.getElementById('related-grid');
     if (relatedGrid) {
-      relatedGrid.innerHTML = related.map(renderProductCard).join('');
+      relatedGrid.innerHTML = related.length
+        ? related.map(renderProductCard).join('')
+        : '<p class="empty-state">' + t('filter.noMatch') + '</p>';
+      relatedGrid.querySelectorAll('.product-card').forEach(el => {
+        el.classList.add('visible');
+        el.classList.remove('fade-in');
+      });
       bindQuickView();
       initProductCardGalleryCycle();
     }
@@ -1135,6 +1170,7 @@
     applyCurtainImages();
     initHomePage();
     initProductCardGalleryCycle();
+    if (document.getElementById('product-detail')) initProductPage();
     I18n.apply();
     setTimeout(() => initPageLoader(), 0);
 
