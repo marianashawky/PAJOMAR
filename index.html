@@ -2,11 +2,12 @@
 <html lang="en" class="is-loading">
 <head>
   <meta charset="UTF-8">
+  <script>try{if(localStorage.getItem('pajomar-theme')==='dark')document.documentElement.classList.add('theme-dark')}catch(e){}</script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="PAJOMAR — Premium curtains and custom window treatments.">
   <title>PAJOMAR — Premium Curtains</title>
   <link rel="icon" href="assets/logo.jpg" type="image/jpeg">
-  <link rel="stylesheet" href="css/main.css?v=hero13">
+  <link rel="stylesheet" href="css/main.css?v=theme-blue4">
 </head>
 <body data-i18n-title="page.title.home" class="page-home">
 
@@ -40,6 +41,37 @@
     <div class="hero-dots" id="hero-dots" role="tablist" aria-label="Hero slideshow"></div>
   </section>
 
+  <section class="home-drape" id="home-drape">
+    <p class="drape-choose" data-i18n="drape.choose">Choose the fabric</p>
+    <div class="drape-types" id="drape-types" role="group"></div>
+    <div
+      class="drape-stage"
+      id="drape-stage"
+      role="slider"
+      tabindex="0"
+      aria-valuemin="0"
+      aria-valuemax="100"
+      aria-valuenow="0"
+    >
+      <div class="drape-reveal">
+        <div class="drape-window" aria-hidden="true">
+          <img class="drape-view-photo" src="assets/images/window-view.jpg" alt="">
+          <span class="drape-glass"></span>
+          <span class="drape-sill"></span>
+        </div>
+      </div>
+      <div class="drape-rod" aria-hidden="true"></div>
+      <div class="drape-panel drape-panel--l">
+        <div class="drape-cloth" id="drape-cloth-l"></div>
+        <span class="drape-tassel" aria-hidden="true"></span>
+      </div>
+      <div class="drape-panel drape-panel--r">
+        <div class="drape-cloth" id="drape-cloth-r"></div>
+        <span class="drape-tassel" aria-hidden="true"></span>
+      </div>
+    </div>
+  </section>
+
   <section class="section section-home-cats">
     <div class="container">
       <div class="section-header fade-in">
@@ -50,16 +82,6 @@
       <div class="home-cat-cta">
         <a href="curtains.html" class="btn btn-dark" data-i18n="home.browseAll">Browse Full Collection</a>
       </div>
-    </div>
-  </section>
-
-  <section class="home-help-band fade-in">
-    <div class="container home-help-inner">
-      <div>
-        <h2 data-i18n="home.help.title">Not sure what fits your space?</h2>
-        <p data-i18n="home.help.text">A few quick questions — and we’ll guide you to the right lookbook and finish.</p>
-      </div>
-      <a href="contact.html#quote" class="btn btn-shop" data-i18n="home.help.cta">Start Now</a>
     </div>
   </section>
 
@@ -102,7 +124,7 @@
   <script src="js/images-manifest.js"></script>
   <script src="js/image-lib.js"></script>
   <script src="js/data.js"></script>
-  <script src="js/i18n.js?v=hero10"></script>
-  <script src="js/app.js?v=hero10"></script>
+  <script src="js/i18n.js?v=theme-blue"></script>
+  <script src="js/app.js?v=theme-blue"></script>
 </body>
 </html>
