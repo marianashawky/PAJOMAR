@@ -2043,7 +2043,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .consult-card {
   padding: 0 0 24px;
-  overflow: hidden;
+  overflow: visible;
   background: var(--warm-cream);
   border-radius: 14px;
 }
@@ -2059,6 +2059,7 @@ h1, h2, h3, h4, h5, h6 {
   height: 100%;
   object-fit: cover;
   display: block;
+  border-radius: 14px 14px 0 0;
 }
 
 .consult-icon {
@@ -2094,7 +2095,7 @@ html[dir="rtl"] .consult-icon {
 }
 
 .consult-card h3 {
-  margin: 8px 0 10px;
+  margin: 22px 0 10px;
   font-size: 1.25rem;
 }
 
@@ -2120,6 +2121,44 @@ html[dir="rtl"] .consult-icon {
   .consult-services {
     grid-template-columns: 1fr;
   }
+
+  .faq-page {
+    padding-bottom: 112px;
+  }
+
+  .faq-heading {
+    font-size: 1.35rem;
+    margin: 4px 0 12px;
+  }
+
+  .faq-list {
+    margin-bottom: 36px;
+  }
+
+  .faq-q {
+    gap: 12px;
+    padding: 16px 2px;
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+
+  .faq-a {
+    padding: 0 2px 18px;
+  }
+
+  .faq-a p {
+    font-size: 14px;
+    line-height: 1.7;
+    max-width: none;
+  }
+
+  .faq-cta {
+    padding: 32px 18px;
+  }
+
+  .faq-cta p {
+    max-width: none;
+  }
 }
 
 .faq-list {
@@ -2133,57 +2172,54 @@ html[dir="rtl"] .consult-icon {
 
 .faq-q {
   display: flex;
+  flex-wrap: nowrap;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
   width: 100%;
+  max-width: 100%;
   padding: 22px 0;
   background: none;
   border: none;
   box-shadow: none;
   text-align: start;
   font-family: var(--font-display);
-  font-size: clamp(1.15rem, 2.4vw, 1.45rem);
+  font-size: clamp(1.05rem, 2.4vw, 1.45rem);
   font-weight: 500;
-  line-height: 1.35;
+  line-height: 1.4;
   color: var(--text);
   cursor: pointer;
+}
+
+.faq-q > span:not(.faq-chevron) {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 html[dir="rtl"] .faq-q {
   font-family: 'Tajawal', var(--font-body);
 }
 
-.faq-plus {
-  position: relative;
+.faq-chevron {
   flex-shrink: 0;
+  display: grid;
+  place-items: center;
   width: 22px;
   height: 22px;
+  color: var(--primary);
+  transition: transform 0.25s ease;
 }
 
-.faq-plus::before,
-.faq-plus::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  background: var(--primary);
-  transform: translate(-50%, -50%);
+.faq-chevron svg {
+  display: block;
+  width: 18px;
+  height: 18px;
 }
 
-.faq-plus::before {
-  width: 16px;
-  height: 1.5px;
-}
-
-.faq-plus::after {
-  width: 1.5px;
-  height: 16px;
-  transition: opacity 0.25s ease;
-}
-
-.faq-item.open .faq-plus::after {
-  opacity: 0;
+.faq-item.open .faq-chevron {
+  transform: rotate(180deg);
 }
 
 .faq-a {
@@ -2200,6 +2236,8 @@ html[dir="rtl"] .faq-q {
   line-height: 1.8;
   color: var(--text-muted);
   max-width: 62ch;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .faq-cta {
@@ -5231,13 +5269,22 @@ html.is-loading body {
 
 .theme-toggle-icon {
   display: flex;
-  width: 22px;
-  height: 22px;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  line-height: 0;
 }
 
 .theme-toggle-icon svg {
-  width: 100%;
-  height: 100%;
+  display: block;
+  width: 22px;
+  height: 22px;
+  overflow: visible;
+}
+
+.theme-toggle:not(.is-on) .theme-toggle-icon svg {
+  transform: translate(1px, -0.5px);
 }
 
 html[dir="rtl"] .theme-toggle {

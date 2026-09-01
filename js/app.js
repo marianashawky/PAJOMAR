@@ -26,7 +26,7 @@
     arrow: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>',
     caret: '<svg viewBox="0 0 10 10" fill="currentColor"><path d="M5 7.2L1.2 2.8h7.6L5 7.2z"/></svg>',
     sun: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="12" r="4.2" fill="currentColor"/><path d="M12 3.2v1.5M12 19.3v1.5M4.1 12H2.6M21.4 12h-1.5M5.2 5.2l1.1 1.1M17.7 17.7l1.1 1.1M5.2 18.8l1.1-1.1M17.7 6.3l1.1-1.1"/></svg>',
-    moon: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.4 14.6A7.1 7.1 0 019.6 5.6 7.5 7.5 0 1017 18.8a7.1 7.1 0 00-.6-4.2z"/></svg>'
+    moon: '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21 14.32A9 9 0 1110.68 3 7.2 7.2 0 0021 14.32z"/></svg>'
   };
 
   function langSwitchHTML(extraClass) {
