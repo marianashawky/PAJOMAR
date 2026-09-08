@@ -18,19 +18,22 @@ const OUT_JS = path.join(ROOT, 'js', 'images-manifest.js');
 const IMAGE_EXT = /\.(jpe?g|png|webp|gif|avif)$/i;
 
 const DEFAULT_FOLDERS = [
-  'hero',
-  'صور تسويق',
-  'sheer',
-  'blackout',
-  'decorative',
-  'classic',
-  'modern',
-  'custom',
-  'white',
-  'bedroom',
-  'living',
-  'dining',
-  'office'
+  'curtains',
+  'shutter-roller',
+  'shutter-zebra',
+  'shutter-wood',
+  'shutter-blackout',
+  'shutter-vertical',
+  'custom-pinch',
+  'custom-wave',
+  'custom-eyelet',
+  'custom-roman',
+  'custom-plain',
+  'acc-rods',
+  'acc-tracks',
+  'acc-tiebacks',
+  'acc-rings',
+  'acc-finials'
 ];
 
 function ensureDir(dir) {

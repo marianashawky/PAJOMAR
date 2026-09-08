@@ -26,8 +26,109 @@
     arrow: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>',
     caret: '<svg viewBox="0 0 10 10" fill="currentColor"><path d="M5 7.2L1.2 2.8h7.6L5 7.2z"/></svg>',
     sun: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="12" r="4.2" fill="currentColor"/><path d="M12 3.2v1.5M12 19.3v1.5M4.1 12H2.6M21.4 12h-1.5M5.2 5.2l1.1 1.1M17.7 17.7l1.1 1.1M5.2 18.8l1.1-1.1M17.7 6.3l1.1-1.1"/></svg>',
-    moon: '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21 14.32A9 9 0 1110.68 3 7.2 7.2 0 0021 14.32z"/></svg>'
+    moon: '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21 14.32A9 9 0 1110.68 3 7.2 7.2 0 0021 14.32z"/></svg>',
+    phone: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v2.2a2 2 0 01-2.18 2 19.8 19.8 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.8 19.8 0 01-3.07-8.68A2 2 0 014.11 1h2.2a2 2 0 012 1.72c.13.96.35 1.9.66 2.8a2 2 0 01-.45 2.11L7.09 9.91a16 16 0 006 6l2.28-1.43a2 2 0 012.11-.45c.9.31 1.84.53 2.8.66A2 2 0 0122 16.92z"/></svg>',
+    mail: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>',
+    instagram: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>',
+    facebook: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M14 9h3V6h-3c-2.2 0-4 1.8-4 4v2H8v3h2v7h3v-7h3l1-3h-4V10c0-.6.4-1 1-1z"/></svg>',
+    tiktok: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M14.2 3h2.6c.2 1.5.9 2.8 2 3.8 1 .9 2.3 1.4 3.6 1.5v2.7c-1.6 0-3.1-.5-4.4-1.3v6.6c0 3.4-2.8 6.2-6.3 6.2S5.4 19.7 5.4 16.3 8.2 10 11.7 10c.4 0 .8 0 1.2.1v2.8c-.4-.2-.8-.3-1.2-.3-2 0-3.6 1.6-3.6 3.6s1.6 3.6 3.6 3.6 3.6-1.6 3.6-3.6V3z"/></svg>',
+    snapchat: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3.2c2.9 0 5.2 2.4 5.2 6.1 0 1.4.2 2.3.8 2.8.3.3.6.3.9.3.3 0 .6 0 .8-.1.2 1-.4 1.7-1.2 2.2-.3.2-.4.4 0 .7 1 .7 2.3 1.3 3.3 1.6.4.1.5.4.4.7-.3 1.3-1.8 1.2-2.7 1.4-.3.1-.4.2-.3.5.3 1.2 1.3 2.1.3 3-.7.6-1.6.3-2.4 0-.6-.2-1.2-.5-2-.5-.7 0-1.3.3-2 .5-.8.3-1.7.6-2.4 0-1-.9 0-1.8.3-3 .1-.3 0-.4-.3-.5-.9-.2-2.4-.1-2.7-1.4-.1-.3 0-.6.4-.7 1-.3 2.3-.9 3.3-1.6.4-.3.3-.5 0-.7-.8-.5-1.4-1.2-1.2-2.2.2.1.5.1.8.1.3 0 .6 0 .9-.3.6-.5.8-1.4.8-2.8 0-3.7 2.3-6.1 5.2-6.1z"/></svg>'
   };
+
+  function socialLinksHTML() {
+    const s = PAJOMAR.company.social;
+    const items = [
+      { href: s.instagram, label: 'Instagram', icon: ICONS.instagram },
+      { href: s.facebook, label: 'Facebook', icon: ICONS.facebook },
+      { href: s.tiktok, label: 'TikTok', icon: ICONS.tiktok },
+      { href: s.snapchat, label: 'Snapchat', icon: ICONS.snapchat }
+    ];
+    return items.map((item) =>
+      `<a class="social-icon" href="${item.href}" target="_blank" rel="noopener noreferrer" aria-label="${item.label}">${item.icon}</a>`
+    ).join('');
+  }
+
+  function legalBadgeItems() {
+    return `
+        <p class="legal-line"><span>${t('legal.cr')}</span> <strong>288830</strong></p>
+        <p class="legal-line"><span>${t('legal.tax')}</span> <strong>337-045-774</strong></p>`;
+  }
+
+  function legalBadgesHTML() {
+    return `<div class="legal-badges">${legalBadgeItems()}</div>`;
+  }
+
+  function phoneChipItems() {
+    const phones = [
+      { href: 'tel:01211925591', label: '012 1192 5591' },
+      { href: 'tel:01044669188', label: '010 4466 9188' }
+    ];
+    return phones.map((p) =>
+      `<a class="phone-chip" href="${p.href}">${ICONS.phone}<span>${p.label}</span></a>`
+    ).join('');
+  }
+
+  function phoneChipsHTML(extraClass) {
+    return `<div class="phone-chips${extraClass ? ' ' + extraClass : ''}">${phoneChipItems()}</div>`;
+  }
+
+  function fillContactExtras() {
+    document.querySelectorAll('[data-social]').forEach((el) => {
+      el.innerHTML = socialLinksHTML();
+    });
+    document.querySelectorAll('[data-legal-badges]').forEach((el) => {
+      el.innerHTML = legalBadgeItems();
+    });
+    document.querySelectorAll('[data-phone-chips]').forEach((el) => {
+      el.innerHTML = phoneChipItems();
+    });
+  }
+
+  function interestLabel(value) {
+    const map = {
+      curtains: 'contact.optCurtains',
+      custom: 'contact.optCustom',
+      consultation: 'contact.optConsultation',
+      installation: 'contact.optInstallation'
+    };
+    return map[value] ? t(map[value]) : value;
+  }
+
+  function initContactWhatsAppForm() {
+    const form = document.querySelector('.contact-form');
+    if (!form || form.dataset.waBound === '1') return;
+    form.dataset.waBound = '1';
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const name = (form.querySelector('#name')?.value || '').trim();
+      const email = (form.querySelector('#email')?.value || '').trim();
+      const phone = (form.querySelector('#phone')?.value || '').trim();
+      const interest = form.querySelector('#interest')?.value || '';
+      const message = (form.querySelector('#message')?.value || '').trim();
+      const lang = (typeof I18n !== 'undefined' && I18n.getLang) ? I18n.getLang() : 'en';
+      const lines = lang === 'ar'
+        ? [
+            'طلب عرض سعر — PAJOMAR',
+            `الاسم: ${name}`,
+            email ? `البريد: ${email}` : '',
+            phone ? `الهاتف: ${phone}` : '',
+            interest ? `الاهتمام: ${interestLabel(interest)}` : '',
+            message ? `التفاصيل: ${message}` : ''
+          ]
+        : [
+            'Quote request — PAJOMAR',
+            `Name: ${name}`,
+            email ? `Email: ${email}` : '',
+            phone ? `Phone: ${phone}` : '',
+            interest ? `Interest: ${interestLabel(interest)}` : '',
+            message ? `Details: ${message}` : ''
+          ];
+      const text = lines.filter(Boolean).join('\n');
+      const url = `https://wa.me/${PAJOMAR.whatsapp}?text=${encodeURIComponent(text)}`;
+      window.open(url, '_blank', 'noopener');
+    });
+  }
 
   function langSwitchHTML(extraClass) {
     return `<button type="button" class="lang-switch-btn${extraClass ? ' ' + extraClass : ''}" aria-label="${I18n.switchAriaLabel()}">
@@ -47,7 +148,9 @@
     'index.html': 'home',
     '': 'home',
     'curtains.html': 'store',
-    'collections.html': 'projects',
+    'shutters.html': 'store',
+    'accessories.html': 'store',
+    'custom.html': 'projects',
     'custom-curtains.html': 'projects',
     'about.html': 'menu',
     'contact.html': 'store',
@@ -64,7 +167,7 @@
         <span class="logo-mark"><img src="assets/logo.jpg" alt=""></span>
         <span class="logo-wordmark">
           <span class="logo-name">PAJOMAR</span>
-          <span class="logo-tagline">Shutters &amp; Curtains</span>
+          <span class="logo-tagline">Curtains &amp; Shutters</span>
         </span>
       </a>`;
   }
@@ -73,7 +176,7 @@
   function searchProducts(query) {
     if (!query || query.length < 1) return [];
     const q = query.toLowerCase();
-    return (PAJOMAR.folders || []).filter(f =>
+    return (PAJOMAR.allFolders || PAJOMAR.folders || []).filter(f =>
       f.folder.toLowerCase().includes(q) ||
       f.name.toLowerCase().includes(q) ||
       folderDisplayName(f.folder).toLowerCase().includes(q)
@@ -82,7 +185,8 @@
       name: folderDisplayName(f.folder),
       image: f.image,
       type: f.folder,
-      collection: f.folder
+      collection: f.folder,
+      department: f.department || (typeof folderDepartment === 'function' ? folderDepartment(f.folder) : 'curtains')
     }));
   }
 
@@ -97,7 +201,7 @@
       return;
     }
     container.innerHTML = results.map(p => `
-      <a href="curtains.html?folder=${encodeURIComponent(p.id)}" class="search-result-item">
+      <a href="${deptHref(p.department)}?folder=${encodeURIComponent(p.id)}" class="search-result-item">
         <img src="${p.image}" alt="${esc(p.name)}" loading="lazy">
         <div class="search-result-info">
           <h5>${esc(p.name)}</h5>
@@ -126,14 +230,108 @@
 
   function folderDisplayName(folder) {
     const known = {
+      curtains: 'nav.curtains',
+      living: 'room.livingRoom', bedroom: 'room.bedroom', dining: 'room.diningRoom',
+      office: 'room.office', reception: 'room.reception',
       sheer: 'type.sheer', blackout: 'type.blackout', decorative: 'type.decorative',
       classic: 'type.classic', modern: 'type.modern', custom: 'type.custom',
-      living: 'room.livingRoom', bedroom: 'room.bedroom', dining: 'room.diningRoom',
-      office: 'room.office', white: 'color.white'
+      white: 'color.white',
+      'shutter-roller': 'dept.shutterRoller',
+      'shutter-zebra': 'dept.shutterZebra',
+      'shutter-wood': 'dept.shutterWood',
+      'shutter-blackout': 'dept.shutterBlackout',
+      'shutter-vertical': 'dept.shutterVertical',
+      'custom-pinch': 'dept.customPinch',
+      'custom-wave': 'dept.customWave',
+      'custom-eyelet': 'dept.customEyelet',
+      'custom-roman': 'dept.customRoman',
+      'custom-plain': 'dept.customPlain',
+      'acc-rods': 'dept.accRods',
+      'acc-tracks': 'dept.accTracks',
+      'acc-tiebacks': 'dept.accTiebacks',
+      'acc-rings': 'dept.accRings',
+      'acc-finials': 'dept.accFinials'
     };
     if (known[folder]) return t(known[folder]);
-    const item = PAJOMAR.folders.find(f => f.folder === folder || f.slug === folder);
+    const item = (PAJOMAR.allFolders || PAJOMAR.folders || []).find(f => f.folder === folder || f.slug === folder);
     return item ? item.name : folder;
+  }
+
+  function imageFileStem(url) {
+    try {
+      const file = decodeURIComponent(String(url || '').split('/').pop() || '');
+      return file.replace(/\.[^.]+$/, '');
+    } catch (e) {
+      return '';
+    }
+  }
+
+  function productImageCode(product) {
+    if (!product) return 'IMG-01';
+    const folder = String(product.folderId || product.imageFolder || product.id || 'img')
+      .replace(/-\d{2}$/, '');
+    const stem = imageFileStem(product.image);
+    const fromIndex = product.galleryIndex != null
+      ? String(product.galleryIndex + 1).padStart(2, '0')
+      : '';
+    const num = fromIndex || (/^\d+$/.test(stem) ? stem.padStart(2, '0') : '01');
+    return `${folder}-${num}`.replace(/\s+/g, '-').toUpperCase();
+  }
+
+  function deptHref(dept) {
+    return (typeof DEPT_PAGES !== 'undefined' && DEPT_PAGES[dept]) || 'curtains.html';
+  }
+
+  function foldersFor(dept) {
+    if (PAJOMAR.departments && PAJOMAR.departments[dept]) return PAJOMAR.departments[dept];
+    return PAJOMAR.folders || [];
+  }
+
+  function megaDeptHTML(dept, labelKey) {
+    const href = deptHref(dept);
+    const folders = foldersFor(dept);
+    if (folders.length <= 1) {
+      return `<a href="${href}" class="nav-link" data-page="${dept}">${t(labelKey)}</a>`;
+    }
+    return `
+          <div class="nav-item has-mega">
+            <a href="${href}" class="nav-link" data-page="${dept}">${t(labelKey)}</a>
+            <div class="mega-menu" role="menu">
+              <div class="mega-grid mega-grid-folders">
+                <div class="mega-col" style="grid-column:1/-1">
+                  <h4>${t('filter.folder')}</h4>
+                  <div class="mega-folder-list">
+                  ${folders.map(f => `
+                    <a href="${href}?folder=${encodeURIComponent(f.folder)}" class="mega-link">
+                      <img src="${f.image}" alt="" loading="lazy">
+                      ${esc(folderDisplayName(f.folder))}
+                    </a>
+                  `).join('')}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>`;
+  }
+
+  function mobileDeptAccordion(dept, labelKey) {
+    const href = deptHref(dept);
+    const folders = foldersFor(dept);
+    return `
+        <a href="${href}" class="mobile-menu-link">${t(labelKey)}</a>
+        <button class="mobile-menu-accordion-btn" data-accordion="${dept}">
+          ${t('filter.folder')} ${ICONS.chevron}
+        </button>
+        <div class="mobile-menu-sub" data-sub="${dept}">
+          <div class="mobile-menu-folders">
+            ${folders.map(f => `
+              <a href="${href}?folder=${encodeURIComponent(f.folder)}" class="mobile-menu-folder">
+                <img src="${f.image}" alt="" loading="lazy">
+                <span>${esc(folderDisplayName(f.folder))}</span>
+              </a>
+            `).join('')}
+          </div>
+        </div>`;
   }
 
   /* ── Header Injection ── */
@@ -148,26 +346,11 @@
         ${logoHTML()}
         <div class="nav-main">
           <a href="index.html" class="nav-link" data-page="home">${t('nav.home')}</a>
-          <div class="nav-item has-mega">
-            <a href="curtains.html" class="nav-link" data-page="curtains">${t('nav.curtains')}</a>
-            <div class="mega-menu" role="menu">
-              <div class="mega-grid mega-grid-folders">
-                <div class="mega-col" style="grid-column:1/-1">
-                  <h4>${t('filter.folder')}</h4>
-                  <div class="mega-folder-list">
-                  ${PAJOMAR.folders.map(f => `
-                    <a href="curtains.html?folder=${encodeURIComponent(f.folder)}" class="mega-link">
-                      <img src="${f.image}" alt="" loading="lazy">
-                      ${esc(folderDisplayName(f.folder))}
-                    </a>
-                  `).join('')}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <a href="collections.html" class="nav-link" data-page="collections">${t('nav.collections')}</a>
-          <a href="custom-curtains.html" class="nav-link" data-page="custom">${t('nav.custom')}</a>
+          ${megaDeptHTML('curtains', 'nav.curtains')}
+          ${megaDeptHTML('shutters', 'nav.shutters')}
+          ${megaDeptHTML('custom', 'nav.custom')}
+          ${megaDeptHTML('accessories', 'nav.accessories')}
+          <a href="custom-curtains.html" class="nav-link" data-page="projects">${t('nav.projects')}</a>
           <a href="consult.html" class="nav-link" data-page="consult">${t('nav.consult')}</a>
           <a href="about.html" class="nav-link" data-page="about">${t('nav.about')}</a>
           <a href="contact.html" class="nav-link" data-page="contact">${t('nav.contact')}</a>
@@ -207,16 +390,16 @@
   }
 
   function initMegaMenu(header) {
-    const item = header.querySelector('.has-mega');
-    if (!item) return;
-    let timeout;
-    item.addEventListener('mouseenter', () => { clearTimeout(timeout); item.classList.add('open'); });
-    item.addEventListener('mouseleave', () => { timeout = setTimeout(() => item.classList.remove('open'), 200); });
-    item.querySelector('.nav-link').addEventListener('click', (e) => {
-      if (window.innerWidth <= 1024) {
-        e.preventDefault();
-        item.classList.toggle('open');
-      }
+    header.querySelectorAll('.has-mega').forEach(item => {
+      let timeout;
+      item.addEventListener('mouseenter', () => { clearTimeout(timeout); item.classList.add('open'); });
+      item.addEventListener('mouseleave', () => { timeout = setTimeout(() => item.classList.remove('open'), 200); });
+      item.querySelector('.nav-link').addEventListener('click', (e) => {
+        if (window.innerWidth <= 1024) {
+          e.preventDefault();
+          item.classList.toggle('open');
+        }
+      });
     });
   }
 
@@ -271,7 +454,7 @@
         <a href="contact.html" class="mobile-nav-item${current === 'store' ? ' active' : ''}" data-nav="store">
           ${ICONS.pin}<span>${t('nav.store')}</span>
         </a>
-        <a href="collections.html" class="mobile-nav-item${current === 'projects' ? ' active' : ''}" data-nav="projects">
+        <a href="custom-curtains.html" class="mobile-nav-item${current === 'projects' ? ' active' : ''}" data-nav="projects">
           ${ICONS.curtains}<span>${t('nav.projects')}</span>
         </a>
       </div>
@@ -301,22 +484,27 @@
       </div>
       <nav class="mobile-menu-nav">
         <a href="index.html" class="mobile-menu-link">${t('nav.home')}</a>
-        <button class="mobile-menu-accordion-btn" data-accordion="curtains">
-          ${t('nav.curtains')} ${ICONS.chevron}
+        ${['curtains', 'shutters', 'custom', 'accessories'].map(dept => {
+          const labels = { curtains: 'nav.curtains', shutters: 'nav.shutters', custom: 'nav.custom', accessories: 'nav.accessories' };
+          const href = deptHref(dept);
+          const folders = foldersFor(dept);
+          return `
+        <button class="mobile-menu-accordion-btn" data-accordion="${dept}">
+          ${t(labels[dept])} ${ICONS.chevron}
         </button>
-        <div class="mobile-menu-sub" data-sub="curtains">
-          <h5>${t('filter.folder')}</h5>
+        <div class="mobile-menu-sub" data-sub="${dept}">
+          <a href="${href}" class="mobile-menu-link">${t('home.browseAll')}</a>
           <div class="mobile-menu-folders">
-            ${PAJOMAR.folders.map(f => `
-              <a href="curtains.html?folder=${encodeURIComponent(f.folder)}" class="mobile-menu-folder">
+            ${folders.map(f => `
+              <a href="${href}?folder=${encodeURIComponent(f.folder)}" class="mobile-menu-folder">
                 <img src="${f.image}" alt="" loading="lazy">
                 <span>${esc(folderDisplayName(f.folder))}</span>
               </a>
             `).join('')}
           </div>
-        </div>
-        <a href="collections.html" class="mobile-menu-link">${t('nav.collections')}</a>
-        <a href="custom-curtains.html" class="mobile-menu-link">${t('nav.custom')}</a>
+        </div>`;
+        }).join('')}
+        <a href="custom-curtains.html" class="mobile-menu-link">${t('nav.projects')}</a>
         <a href="consult.html" class="mobile-menu-link">${t('nav.consult')}</a>
         <a href="about.html" class="mobile-menu-link">${t('nav.about')}</a>
         <a href="contact.html" class="mobile-menu-link">${t('nav.contact')}</a>
@@ -327,9 +515,12 @@
 
     drawer.querySelector('.lang-switch-btn').addEventListener('click', () => I18n.toggleLang());
     drawer.querySelector('.mobile-menu-close').addEventListener('click', () => toggleMobileMenu(false));
-    drawer.querySelector('[data-accordion="curtains"]').addEventListener('click', function () {
-      this.classList.toggle('open');
-      drawer.querySelector('[data-sub="curtains"]').classList.toggle('open');
+    drawer.querySelectorAll('.mobile-menu-accordion-btn').forEach(btn => {
+      btn.addEventListener('click', function () {
+        const key = this.getAttribute('data-accordion');
+        this.classList.toggle('open');
+        drawer.querySelector(`[data-sub="${key}"]`)?.classList.toggle('open');
+      });
     });
   }
 
@@ -359,12 +550,16 @@
         <button aria-label="Close">${ICONS.close}</button>
       </div>
       <div class="mobile-cat-grid">
-        ${PAJOMAR.folders.map(f => `
-          <a href="curtains.html?folder=${encodeURIComponent(f.folder)}" class="mobile-cat-card">
-            <img src="${f.image}" alt="${esc(folderDisplayName(f.folder))}" loading="lazy">
-            <span>${esc(folderDisplayName(f.folder))}</span>
-          </a>
-        `).join('')}
+        ${['curtains', 'shutters', 'custom', 'accessories'].map(dept => {
+          const labels = { curtains: 'nav.curtains', shutters: 'nav.shutters', custom: 'nav.custom', accessories: 'nav.accessories' };
+          const f = foldersFor(dept)[0];
+          if (!f) return '';
+          return `
+          <a href="${deptHref(dept)}" class="mobile-cat-card">
+            <img src="${f.image}" alt="${esc(t(labels[dept]))}" loading="lazy">
+            <span>${esc(t(labels[dept]))}</span>
+          </a>`;
+        }).join('')}
       </div>
     `;
     document.body.appendChild(el);
@@ -516,12 +711,17 @@
           <div class="footer-brand">
             ${logoHTML('footer')}
             <p>${t('footer.tagline')}</p>
+            ${legalBadgesHTML()}
+            ${phoneChipsHTML('phone-chips--footer')}
+            <a class="mail-chip" href="mailto:Patgo.curtains@gmail.com">${ICONS.mail}<span>Patgo.curtains@gmail.com</span></a>
+            <div class="social-links" aria-label="${esc(t('footer.social'))}">${socialLinksHTML()}</div>
           </div>
           <div class="footer-col">
             <h4>${t('footer.shop')}</h4>
             <a href="curtains.html">${t('nav.curtains')}</a>
-            <a href="collections.html">${t('nav.collections')}</a>
-            <a href="custom-curtains.html">${t('nav.custom')}</a>
+            <a href="shutters.html">${t('nav.shutters')}</a>
+            <a href="custom.html">${t('nav.custom')}</a>
+            <a href="accessories.html">${t('nav.accessories')}</a>
           </div>
           <div class="footer-col">
             <h4>${t('footer.discover')}</h4>
@@ -537,7 +737,7 @@
           </div>
         </div>
         <div class="footer-bottom">
-          <span>&copy; ${new Date().getFullYear()} PAJOMAR Shutters & Curtains. ${t('footer.rights')}</span>
+          <span>&copy; ${new Date().getFullYear()} ${esc(PAJOMAR.company.name)}. ${t('footer.rights')}</span>
           <span>${t('footer.crafted')}</span>
         </div>
       </div>
@@ -547,18 +747,15 @@
 
   /* ── Product Card Renderer ── */
   window.renderProductCard = function (product) {
-    const pt = I18n.translateProduct(product);
     const folderId = product.folderId || product.imageFolder || product.id;
-    const gallery = product.gallery?.length ? product.gallery : [product.image, product.imageSecondary].filter(Boolean);
-    const galleryJson = JSON.stringify(gallery).replace(/"/g, '&quot;');
+    const code = productImageCode(product);
     const href = `product.html?id=${encodeURIComponent(folderId)}${product.galleryIndex != null ? `&img=${product.galleryIndex}` : ''}`;
 
     return `
       <article class="product-card fade-in">
-        <div class="product-card-image" data-gallery="${galleryJson}">
+        <div class="product-card-image">
           <a href="${href}">
-            <img class="img-primary" src="${product.image}" alt="${esc(pt.name)}" loading="lazy">
-            ${gallery.length > 1 ? `<img class="img-secondary" src="${product.imageSecondary || gallery[1]}" alt="" loading="lazy">` : ''}
+            <img class="img-primary" src="${product.image}" alt="${esc(code)}" loading="lazy">
           </a>
           <div class="product-card-actions">
             <button class="btn quick-view-btn" data-id="${esc(folderId)}" data-img="${product.galleryIndex ?? 0}">${t('product.quickView')}</button>
@@ -566,8 +763,7 @@
           </div>
         </div>
         <div class="product-card-info">
-          <a href="${href}"><h3>${esc(folderDisplayName(folderId))}</h3></a>
-          <p class="product-card-meta">${gallery.length} ${gallery.length === 1 ? t('listing.product') : t('listing.products')}</p>
+          <a href="${href}"><h3>${esc(code)}</h3></a>
           <a href="contact.html#quote" class="product-card-request">${t('product.requestProduct')}</a>
         </div>
       </article>
@@ -575,9 +771,10 @@
   };
 
   /* ── Filters & Listing — driven only by image folders ── */
-  window.initCurtainsPage = function () {
+  window.initCatalogPage = function (dept) {
     const grid = document.getElementById('product-grid');
     if (!grid) return;
+    dept = dept || document.body.getAttribute('data-dept') || 'curtains';
 
     const params = new URLSearchParams(window.location.search);
     const folderParam = params.get('folder') || params.get('type') || params.get('room') || '';
@@ -593,7 +790,7 @@
     };
 
     function getFiltered() {
-      let items = [...(PAJOMAR.listingItems || [])];
+      let items = [...(PAJOMAR.listingByDept?.[dept] || PAJOMAR.listingItems || [])];
 
       if (state.folders.length) {
         items = items.filter(p => state.folders.includes(p.folderId || p.imageFolder));
@@ -696,7 +893,7 @@
     render();
 
     window._curtainsRender = () => {
-      const filterHTML = getFilterHTML();
+      const filterHTML = getFilterHTML(dept);
       const sidebar = document.getElementById('filter-sidebar');
       const drawerBody = document.getElementById('filter-drawer-body');
       if (sidebar) sidebar.innerHTML = filterHTML;
@@ -755,17 +952,21 @@
       ? startFromListing.galleryIndex
       : startImg;
 
-    const label = folderDisplayName(product.imageFolder || product.id);
-    document.title = label + ' — PAJOMAR';
-
     const gallery = product.gallery || [product.image, product.imageSecondary].filter(Boolean);
     const uniqueGallery = [...new Set(gallery)];
     const activeIndex = Math.min(Math.max(galleryStart, 0), uniqueGallery.length - 1);
+    const code = productImageCode({
+      ...product,
+      folderId: product.imageFolder || product.id,
+      galleryIndex: activeIndex,
+      image: uniqueGallery[activeIndex]
+    });
+    document.title = code + ' — PAJOMAR';
 
     container.innerHTML = `
       <div class="product-gallery">
         <div class="product-gallery-main">
-          <img id="main-image" src="${uniqueGallery[activeIndex]}" alt="${esc(label)}">
+          <img id="main-image" src="${uniqueGallery[activeIndex]}" alt="${esc(code)}">
         </div>
         ${uniqueGallery.length > 1 ? `
         <div class="product-gallery-thumbs">
@@ -775,11 +976,10 @@
         </div>` : ''}
       </div>
       <div class="product-info">
-        <p class="eyebrow">${esc(t('filter.folder'))}</p>
-        <h1>${esc(label)}</h1>
+        <p class="eyebrow">${esc(t('product.code'))}</p>
+        <h1>${esc(code)}</h1>
         <div class="product-meta-row">
-          <div class="product-meta-item"><label>${t('filter.folder')}</label><span>${esc(label)}</span></div>
-          <div class="product-meta-item"><label>${t('listing.products')}</label><span>${uniqueGallery.length}</span></div>
+          <div class="product-meta-item"><label>${t('product.code')}</label><span>${esc(code)}</span></div>
         </div>
         <div class="product-actions">
           <a href="contact.html#quote" class="btn btn-primary">${t('product.requestProduct')}</a>
@@ -845,9 +1045,14 @@
   }
 
   function showQuickView(product, imgIndex = 0) {
-    const label = folderDisplayName(product.imageFolder || product.id);
     const gallery = product.gallery || [product.image];
     const src = gallery[imgIndex] || gallery[0] || product.image;
+    const code = productImageCode({
+      ...product,
+      folderId: product.imageFolder || product.id,
+      galleryIndex: imgIndex,
+      image: src
+    });
     let modal = document.getElementById('quick-view-modal');
     if (!modal) {
       modal = document.createElement('div');
@@ -857,11 +1062,11 @@
     }
     modal.innerHTML = `
       <div class="modal-content" style="display:grid;grid-template-columns:1fr 1fr;gap:32px;padding:32px">
-        <img src="${src}" alt="${esc(label)}" style="width:100%;border-radius:8px;object-fit:cover">
+        <img src="${src}" alt="${esc(code)}" style="width:100%;border-radius:8px;object-fit:cover">
         <div>
           <button class="search-close" style="float:right" aria-label="Close">${ICONS.close}</button>
-          <p class="eyebrow">${esc(t('filter.folder'))}</p>
-          <h2 style="margin:8px 0">${esc(label)}</h2>
+          <p class="eyebrow">${esc(t('product.code'))}</p>
+          <h2 style="margin:8px 0">${esc(code)}</h2>
           <a href="product.html?id=${encodeURIComponent(product.id)}&img=${imgIndex}" class="btn btn-primary">${t('product.viewProduct')}</a>
           <a href="contact.html#quote" class="btn btn-outline" style="margin-inline-start:8px">${t('product.requestProduct')}</a>
         </div>
@@ -872,33 +1077,12 @@
     modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('open'); });
   }
 
-  /* ── Filter Sidebar Template ── */
-  window.initCollectionsPage = function () {
-    const list = document.getElementById('collections-list');
-    if (!list) return;
-
-    function render() {
-      list.innerHTML = (PAJOMAR.folders || []).map(f => `
-        <article class="collection-editorial-item fade-in" id="${esc(f.folder)}">
-          <div class="collection-editorial-image">
-            <img src="${f.image}" alt="${esc(folderDisplayName(f.folder))}" loading="lazy">
-          </div>
-          <div class="collection-editorial-text">
-            <p class="eyebrow">${esc(f.folder)}</p>
-            <h2 class="display-md">${esc(folderDisplayName(f.folder))}</h2>
-            <a href="curtains.html?folder=${encodeURIComponent(f.folder)}" class="btn btn-primary btn-sm">${t('collections.exploreBtn')}</a>
-          </div>
-        </article>
-      `).join('');
-      observeFadeIn();
-    }
-
-    render();
-    window._collectionsRender = render;
+  window.initCurtainsPage = function () {
+    window.initCatalogPage('curtains');
   };
 
-  window.getFilterHTML = function () {
-    const folders = PAJOMAR.folders || [];
+  window.getFilterHTML = function (dept) {
+    const folders = foldersFor(dept || document.body.getAttribute('data-dept') || 'curtains');
 
     if (!folders.length) {
       return `<p class="empty-state">${t('filter.noMatch')}</p>`;
@@ -940,12 +1124,88 @@
     injectThemeToggle();
     if (typeof window._curtainsRender === 'function') window._curtainsRender();
     if (typeof window._productRender === 'function') window._productRender();
-    if (typeof window._collectionsRender === 'function') window._collectionsRender();
     applyCurtainImages();
     initProductCardGalleryCycle();
     initHomePage();
+    fillContactExtras();
     const relatedTitle = document.querySelector('.related-section h2');
     if (relatedTitle) relatedTitle.textContent = t('product.related');
+  }
+
+  function initHomeRoomsScroller(track) {
+    const scroller = track?.closest('.home-rooms-marquee');
+    const section = track?.closest('.section-stories');
+    if (!scroller || !track || track.dataset.scrollBound === '1') return;
+    track.dataset.scrollBound = '1';
+
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let offset = 0;
+    let paused = reduced;
+    let resumeTimer = 0;
+    const speed = 0.5;
+
+    const loopWidth = () => track.scrollWidth / 2;
+
+    const apply = () => {
+      const half = loopWidth();
+      if (half > 1) {
+        offset = ((offset % half) + half) % half;
+      } else {
+        offset = 0;
+      }
+      track.style.transform = `translate3d(${-offset}px, 0, 0)`;
+    };
+
+    const pauseAuto = (ms = 3200) => {
+      if (reduced) return;
+      paused = true;
+      window.clearTimeout(resumeTimer);
+      resumeTimer = window.setTimeout(() => {
+        paused = false;
+      }, ms);
+    };
+
+    const step = (dir) => {
+      const card = track.querySelector('.home-room-card');
+      const styles = window.getComputedStyle(track);
+      const gap = parseFloat(styles.columnGap || styles.gap) || 14;
+      const amount = (card?.getBoundingClientRect().width || 200) + gap;
+      offset += dir * amount;
+      apply();
+      pauseAuto(3600);
+    };
+
+    (section || document).querySelectorAll('[data-rooms-dir]').forEach((btn) => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const dir = Number(btn.getAttribute('data-rooms-dir')) || 0;
+        if (dir) step(dir);
+      });
+    });
+
+    scroller.addEventListener('mouseenter', () => {
+      if (reduced) return;
+      paused = true;
+      window.clearTimeout(resumeTimer);
+    });
+    scroller.addEventListener('mouseleave', () => {
+      if (reduced) return;
+      window.clearTimeout(resumeTimer);
+      resumeTimer = window.setTimeout(() => {
+        paused = false;
+      }, 700);
+    });
+    scroller.addEventListener('touchstart', () => pauseAuto(2800), { passive: true });
+
+    const tick = () => {
+      if (!paused && scroller.isConnected) {
+        offset += speed;
+        apply();
+      }
+      window.requestAnimationFrame(tick);
+    };
+    apply();
+    window.requestAnimationFrame(tick);
   }
 
   function initHomePage() {
@@ -956,15 +1216,70 @@
     const stories = document.getElementById('home-stories');
     const projectMedia = document.getElementById('home-project-media');
     const newsForm = document.getElementById('home-newsletter-form');
+    const usedImages = new Set((PAJOMAR.heroSlides || []).filter(Boolean));
+    const claimImage = (src) => {
+      if (!src || src.includes('_fallback') || usedImages.has(src)) return false;
+      usedImages.add(src);
+      return true;
+    };
+    const pickFromFolder = (folder, preferIndex) => {
+      const all = typeof ImageLib !== 'undefined' ? ImageLib.getAll(folder) : [];
+      if (!all.length) return '';
+      const ordered = [];
+      if (preferIndex != null && all[preferIndex]) ordered.push(all[preferIndex]);
+      all.forEach((src, i) => {
+        if (i !== preferIndex) ordered.push(src);
+      });
+      for (const src of ordered) {
+        if (claimImage(src)) return src;
+      }
+      return '';
+    };
+
+    const shopGrid = document.getElementById('shop-dept-grid');
+    if (shopGrid) {
+      const depts = [
+        { id: 'curtains', label: 'nav.curtains', folder: 'modern', prefer: 3 },
+        { id: 'shutters', label: 'nav.shutters', folder: 'shutter-vertical', prefer: 0 },
+        { id: 'custom', label: 'nav.custom', folder: 'custom-pinch', prefer: 0 },
+        { id: 'accessories', label: 'nav.accessories', folder: 'acc-rods', prefer: 0 }
+      ];
+      shopGrid.innerHTML = depts.map(d => {
+        let cover = (PAJOMAR.deptCovers && PAJOMAR.deptCovers[d.id]) || '';
+        if (!claimImage(cover)) {
+          cover = pickFromFolder(d.folder, d.prefer)
+            || pickFromFolder(d.folder, 0)
+            || (foldersFor(d.id)[0] && claimImage(foldersFor(d.id)[0].image) ? foldersFor(d.id)[0].image : '');
+          if (!cover && foldersFor(d.id)[0]) {
+            const fallback = foldersFor(d.id)[0].image;
+            if (fallback && !fallback.includes('_fallback')) cover = fallback;
+          }
+        }
+        if (!cover) return '';
+        return `
+          <a href="${deptHref(d.id)}" class="shop-dept-card fade-in visible">
+            <img src="${cover}" alt="" loading="eager">
+            <span>${esc(t(d.label))}</span>
+          </a>`;
+      }).join('');
+    }
 
     if (grid) {
-      let marketing = (PAJOMAR.homeMarketing || []).slice(0, 4);
+      let marketing = (PAJOMAR.homeMarketing || []).filter((src) => claimImage(src));
       if (!marketing.length && typeof ImageLib !== 'undefined') {
-        const folder = PAJOMAR.homeMarketingFolder || 'صور تسويق';
-        marketing = ImageLib.getAll(folder).slice(0, 4);
+        const curtainFolders = (PAJOMAR.folders || []).map((f) => f.folder).filter(Boolean);
+        for (const folder of curtainFolders) {
+          for (const src of ImageLib.getAll(folder)) {
+            if (claimImage(src)) {
+              marketing.push(src);
+              if (marketing.length >= 4) break;
+            }
+          }
+          if (marketing.length >= 4) break;
+        }
       }
       grid.innerHTML = marketing.length
-        ? marketing.map((src, i) => `
+        ? marketing.slice(0, 4).map((src, i) => `
             <a href="curtains.html" class="home-cat-card fade-in visible">
               <img src="${src}" alt="" loading="${i === 0 ? 'eager' : 'lazy'}">
             </a>
@@ -973,22 +1288,49 @@
     }
 
     if (stories) {
-      stories.innerHTML = folders.slice(0, 3).map((f, i) => `
-        <article class="home-story fade-in${i === 0 ? ' home-story--feature' : ''}">
-          <a href="curtains.html?folder=${encodeURIComponent(f.folder)}" class="home-story-media">
-            <img src="${f.image}" alt="${esc(folderDisplayName(f.folder))}" loading="lazy">
-          </a>
-          <div class="home-story-body">
-            <h3>${esc(folderDisplayName(f.folder))}</h3>
-            <p>${esc(t('home.stories.cardText').replace('{name}', folderDisplayName(f.folder)))}</p>
-            <a href="curtains.html?folder=${encodeURIComponent(f.folder)}" class="link-arrow">${esc(t('home.stories.view'))}</a>
-          </div>
-        </article>
-      `).join('');
+      const rooms = [
+        { folder: 'sheer', name: t('type.sheer') },
+        { folder: 'blackout', name: t('type.blackout') },
+        { folder: 'classic', name: t('type.classic') },
+        { folder: 'modern', name: t('type.modern') },
+        { folder: 'decorative', name: t('type.decorative') },
+        { folder: 'bedroom', name: t('room.bedroom') },
+        { folder: 'living', name: t('room.livingRoom') },
+        { folder: 'dining', name: t('room.diningRoom') },
+        { folder: 'office', name: t('room.office') },
+        { folder: 'reception', name: t('room.reception') }
+      ].filter((r) => ImageLib.has(r.folder));
+      /* Always pick a real folder photo — do not depend on leftover unique pool */
+      const roomCards = rooms.map((r) => {
+        const all = ImageLib.getAll(r.folder);
+        const src = all[1] || all[0] || '';
+        if (!src || src.includes('_fallback')) return '';
+        return `
+        <a href="curtains.html?folder=${encodeURIComponent(r.folder)}" class="home-room-card">
+          <img src="${src}" alt="${esc(r.name)}" loading="eager" decoding="async" draggable="false">
+          <span>${esc(r.name)}</span>
+        </a>`;
+      }).filter(Boolean).join('');
+      /* Two identical tracks for seamless loop + manual scroll */
+      stories.innerHTML = roomCards + roomCards;
+      stories.removeAttribute('data-marquee');
+      initHomeRoomsScroller(stories);
     }
 
-    if (projectMedia && folders[0]) {
-      const imgs = (folders[0].gallery || [folders[0].image]).slice(0, 3);
+    if (projectMedia) {
+      const softFolders = [
+        ['sheer', 1],
+        ['sheer', 2],
+        ['modern', 3],
+        ['living', 1],
+        ['bedroom', 3]
+      ];
+      const imgs = [];
+      for (const [folder, idx] of softFolders) {
+        const src = pickFromFolder(folder, idx) || pickFromFolder(folder, 1) || pickFromFolder(folder, 0);
+        if (src) imgs.push(src);
+        if (imgs.length >= 3) break;
+      }
       projectMedia.innerHTML = imgs.map(src => `<img src="${src}" alt="" loading="lazy">`).join('');
     }
 
@@ -1240,38 +1582,7 @@
   }
 
   function initProductCardGalleryCycle() {
-    document.querySelectorAll('.product-card-image[data-gallery]').forEach(container => {
-      let gallery;
-      try {
-        gallery = JSON.parse(container.dataset.gallery || '[]');
-      } catch {
-        return;
-      }
-      if (gallery.length < 2) return;
-
-      const card = container.closest('.product-card');
-      const primary = container.querySelector('.img-primary');
-      const secondary = container.querySelector('.img-secondary');
-      let idx = 0;
-      let timer = null;
-
-      card?.addEventListener('mouseenter', () => {
-        if (timer) return;
-        timer = setInterval(() => {
-          idx = (idx + 1) % gallery.length;
-          if (primary) primary.src = gallery[idx];
-          if (secondary) secondary.src = gallery[(idx + 1) % gallery.length];
-        }, 900);
-      });
-
-      card?.addEventListener('mouseleave', () => {
-        if (timer) clearInterval(timer);
-        timer = null;
-        idx = 0;
-        if (primary) primary.src = gallery[0];
-        if (secondary) secondary.src = gallery[1] || gallery[0];
-      });
-    });
+    /* Keep catalog card images fixed — no hover/click gallery swap */
   }
 
   window.initHeroSlideshow = function () {
@@ -1369,10 +1680,7 @@
       loader.setAttribute('aria-busy', 'true');
       loader.innerHTML = `
         <div class="page-loader__inner" aria-hidden="true">
-          <span class="page-loader__ring"></span>
-          <span class="page-loader__ring page-loader__ring--delay"></span>
-          <div class="page-loader__mark"><span class="page-loader__letter">P</span></div>
-          <div class="page-loader__folds"><span></span><span></span><span></span><span></span><span></span></div>
+          <div class="page-loader__logo"><img src="assets/logo.jpg" alt=""></div>
         </div>
       `;
       loader.setAttribute('aria-label', 'PAJOMAR');
@@ -1398,13 +1706,12 @@
   async function initPageLoader() {
     const loader = ensurePageLoader();
     const started = performance.now();
-    const minShow = 400;
+    const minShow = 500;
 
     const priority = [
       ...document.querySelectorAll('#hero-slideshow img'),
       ...document.querySelectorAll('#home-cat-grid img'),
       ...document.querySelectorAll('#product-grid img'),
-      ...document.querySelectorAll('#collections-list img'),
       ...document.querySelectorAll('.product-gallery img, .about-image img, [data-curtain-img]')
     ].slice(0, 10);
 
@@ -1457,6 +1764,11 @@
     initProductCardGalleryCycle();
     if (document.getElementById('product-detail')) initProductPage();
     initConsultFaq();
+    document.querySelectorAll('[data-wa-link]').forEach(a => {
+      a.href = `https://wa.me/${PAJOMAR.whatsapp}`;
+    });
+    fillContactExtras();
+    initContactWhatsAppForm();
     I18n.apply();
     setTimeout(() => initPageLoader(), 0);
 
