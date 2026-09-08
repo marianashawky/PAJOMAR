@@ -2690,9 +2690,56 @@ html.theme-dark .shop-dept-card span {
   padding: 10px 16px;
   font-size: 13px;
   font-weight: 500;
+  color: var(--text);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   background: #fff;
+  transition: background var(--transition), color var(--transition), border-color var(--transition);
+}
+
+html.theme-dark .filter-mobile-btn {
+  background: #0A3D54;
+  color: #E8F7FC;
+  border-color: rgba(61, 180, 224, 0.4);
+}
+
+html.theme-dark .filter-mobile-btn:hover,
+html.theme-dark .filter-mobile-btn:focus-visible {
+  background: #0C4F6B;
+  color: #fff;
+  border-color: var(--primary);
+}
+
+html.theme-dark .sort-select {
+  background-color: #0A3D54;
+  color: #E8F7FC;
+  border-color: rgba(61, 180, 224, 0.4);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239BC7D8' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+}
+
+html.theme-dark .filter-clear {
+  color: #E8F7FC;
+  border-color: rgba(61, 180, 224, 0.4);
+}
+
+html.theme-dark .filter-clear:hover {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #fff;
+}
+
+html.theme-dark .filter-drawer-footer .btn-outline,
+html.theme-dark .clear-filters-btn.btn-outline {
+  background: transparent;
+  color: #E8F7FC;
+  border-color: rgba(61, 180, 224, 0.45);
+}
+
+html.theme-dark .filter-drawer-footer .btn-outline:hover,
+html.theme-dark .clear-filters-btn.btn-outline:hover {
+  background: #0A3D54;
+  color: #fff;
+  border-color: var(--primary);
 }
 
 .active-filters {
