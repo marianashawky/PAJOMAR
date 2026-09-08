@@ -1267,15 +1267,26 @@
     if (grid) {
       let marketing = (PAJOMAR.homeMarketing || []).filter((src) => claimImage(src));
       if (!marketing.length && typeof ImageLib !== 'undefined') {
-        const curtainFolders = (PAJOMAR.folders || []).map((f) => f.folder).filter(Boolean);
-        for (const folder of curtainFolders) {
-          for (const src of ImageLib.getAll(folder)) {
+        const marketingFolder = PAJOMAR.homeMarketingFolder || 'صور تسويق';
+        if (ImageLib.has(marketingFolder)) {
+          for (const src of ImageLib.getAll(marketingFolder)) {
             if (claimImage(src)) {
               marketing.push(src);
               if (marketing.length >= 4) break;
             }
           }
-          if (marketing.length >= 4) break;
+        }
+        if (!marketing.length) {
+          const curtainFolders = (PAJOMAR.folders || []).map((f) => f.folder).filter(Boolean);
+          for (const folder of curtainFolders) {
+            for (const src of ImageLib.getAll(folder)) {
+              if (claimImage(src)) {
+                marketing.push(src);
+                if (marketing.length >= 4) break;
+              }
+            }
+            if (marketing.length >= 4) break;
+          }
         }
       }
       grid.innerHTML = marketing.length

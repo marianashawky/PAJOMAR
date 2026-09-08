@@ -93,7 +93,7 @@ function folderDepartment(folder) {
   return '';
 }
 
-const HOME_MARKETING_FOLDER = 'modern';
+const HOME_MARKETING_FOLDER = 'صور تسويق';
 const HOME_MARKETING_LIMIT = 4;
 
 function folderLabel(folder) {
@@ -282,25 +282,15 @@ if (!PAJOMAR.heroSlides.length) {
 }
 
 PAJOMAR.homeMarketingFolder = HOME_MARKETING_FOLDER;
-/* مختارات — soft sheer / light curtain looks only */
+/* مختارات — from assets/images/صور تسويق */
 PAJOMAR.homeMarketing = (() => {
   const hero = new Set(PAJOMAR.heroSlides || []);
-  const preferred = [
-    ImageLib.url('modern', 1),  /* light sheer living */
-    ImageLib.url('sheer', 1),   /* lace sheer */
-    ImageLib.url('sheer', 2),   /* soft white sheers */
-    ImageLib.url('living', 2),  /* airy white drapes */
-    ImageLib.url('modern', 3),  /* peach sheer (fallback) */
-    ImageLib.url('bedroom', 1)
-  ];
-  const skipHeavy = new Set([
-    ImageLib.url('modern', 2),   /* brown sofa */
-    ImageLib.url('bedroom', 2),  /* dark heavy drapes */
-    ImageLib.url('bedroom', 3)   /* brown side panels */
-  ].filter(Boolean));
+  const fromFolder = ImageLib.has(HOME_MARKETING_FOLDER)
+    ? ImageLib.getAll(HOME_MARKETING_FOLDER)
+    : [];
   const out = [];
-  preferred.forEach((src) => {
-    if (!src || src.includes('_fallback') || hero.has(src) || skipHeavy.has(src) || out.includes(src)) return;
+  fromFolder.forEach((src) => {
+    if (!src || src.includes('_fallback') || hero.has(src) || out.includes(src)) return;
     out.push(src);
   });
   return out.slice(0, HOME_MARKETING_LIMIT);
