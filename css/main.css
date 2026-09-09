@@ -2686,11 +2686,47 @@ html.theme-dark .shop-dept-card span {
   padding: 10px 36px 10px 14px;
   font-family: var(--font-body);
   font-size: 13px;
+  font-weight: 500;
+  line-height: 1.3;
+  color: var(--text);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236B6560' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") no-repeat right 12px center;
+  background-color: var(--warm-white, #fff);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236B6560' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
   appearance: none;
+  -webkit-appearance: none;
   cursor: pointer;
+  min-width: 9.5em;
+  max-width: 100%;
+  box-shadow: none;
+}
+
+html[dir="rtl"] .sort-select {
+  padding: 10px 14px 10px 36px;
+  background-position: left 12px center;
+}
+
+.sort-select:focus,
+.sort-select:focus-visible {
+  outline: none;
+  border-color: var(--primary);
+}
+
+html.theme-dark .listing-controls .sort-select,
+html.theme-dark .sort-select {
+  background-color: #0A3D54;
+  color: #E8F7FC;
+  border-color: rgba(61, 180, 224, 0.45);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239BC7D8' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+}
+
+html.theme-dark[dir="rtl"] .listing-controls .sort-select,
+html.theme-dark[dir="rtl"] .sort-select {
+  background-position: left 12px center;
 }
 
 .filter-mobile-btn {
@@ -2718,13 +2754,6 @@ html.theme-dark .filter-mobile-btn:focus-visible {
   background: #0C4F6B;
   color: #fff;
   border-color: var(--primary);
-}
-
-html.theme-dark .sort-select {
-  background-color: #0A3D54;
-  color: #E8F7FC;
-  border-color: rgba(61, 180, 224, 0.4);
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239BC7D8' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
 }
 
 html.theme-dark .filter-clear {
