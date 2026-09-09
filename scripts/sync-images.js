@@ -16,6 +16,8 @@ const ROOT = path.join(__dirname, '..');
 const IMAGES_DIR = path.join(ROOT, 'assets', 'images');
 const OUT_JS = path.join(ROOT, 'js', 'images-manifest.js');
 const IMAGE_EXT = /\.(jpe?g|png|webp|gif|avif)$/i;
+const VIDEO_EXT = /\.(mp4|webm|mov|m4v)$/i;
+const MEDIA_EXT = /\.(jpe?g|png|webp|gif|avif|mp4|webm|mov|m4v)$/i;
 
 const DEFAULT_FOLDERS = [
   'curtains',
@@ -43,7 +45,7 @@ function ensureDir(dir) {
 function listImages(dir) {
   if (!fs.existsSync(dir)) return [];
   return fs.readdirSync(dir)
-    .filter((f) => IMAGE_EXT.test(f))
+    .filter((f) => MEDIA_EXT.test(f))
     .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
 }
 
@@ -72,8 +74,17 @@ function scanImages() {
 
   for (const entry of fs.readdirSync(IMAGES_DIR, { withFileTypes: true })) {
     if (!entry.isDirectory() || entry.name === 'products') continue;
-    const files = listImages(path.join(IMAGES_DIR, entry.name));
+    const folderPath = path.join(IMAGES_DIR, entry.name);
+    const files = listImages(folderPath);
     if (files.length) manifest[entry.name] = files;
+
+    /* One nested level — e.g. مشاريع صغيره/<site>/ */
+    for (const child of fs.readdirSync(folderPath, { withFileTypes: true })) {
+      if (!child.isDirectory()) continue;
+      const key = `${entry.name}/${child.name}`;
+      const childFiles = listImages(path.join(folderPath, child.name));
+      if (childFiles.length) manifest[key] = childFiles;
+    }
   }
 
   for (const entry of fs.readdirSync(productsDir, { withFileTypes: true })) {
@@ -88,7 +99,7 @@ function scanImages() {
 
 const manifest = scanImages();
 const js = `/* AUTO-GENERATED — do not edit manually.
-   Add images to assets/images/<folder-name>/ then run:
+   Add images/videos to assets/images/<folder-name>/ then run:
    node scripts/sync-images.js */
 const IMAGE_MANIFEST = ${JSON.stringify(manifest, null, 2)};
 `;
@@ -96,4 +107,8 @@ const IMAGE_MANIFEST = ${JSON.stringify(manifest, null, 2)};
 fs.writeFileSync(OUT_JS, js, 'utf8');
 
 const total = Object.values(manifest).reduce((n, files) => n + files.length, 0);
-console.log(`✓ ${Object.keys(manifest).length} folders, ${total} images → js/images-manifest.js`);
+const videos = Object.values(manifest).reduce(
+  (n, files) => n + files.filter((f) => VIDEO_EXT.test(f)).length,
+  0
+);
+console.log(`✓ ${Object.keys(manifest).length} folders, ${total} media (${videos} videos) → js/images-manifest.js`);

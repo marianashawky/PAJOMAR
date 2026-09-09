@@ -98,6 +98,7 @@
     const form = document.querySelector('.contact-form');
     if (!form || form.dataset.waBound === '1') return;
     form.dataset.waBound = '1';
+    initQuoteProductCode();
 
     form.addEventListener('submit', (e) => {
       e.preventDefault();
@@ -105,7 +106,9 @@
       const email = (form.querySelector('#email')?.value || '').trim();
       const phone = (form.querySelector('#phone')?.value || '').trim();
       const interest = form.querySelector('#interest')?.value || '';
-      const message = (form.querySelector('#message')?.value || '').trim();
+      const messageEl = form.querySelector('#message');
+      const message = (messageEl?.value || '').trim();
+      const code = (messageEl?.dataset.productCode || new URLSearchParams(window.location.search).get('code') || '').trim();
       const lang = (typeof I18n !== 'undefined' && I18n.getLang) ? I18n.getLang() : 'en';
       const lines = lang === 'ar'
         ? [
@@ -114,6 +117,7 @@
             email ? `البريد: ${email}` : '',
             phone ? `الهاتف: ${phone}` : '',
             interest ? `الاهتمام: ${interestLabel(interest)}` : '',
+            code ? `كود الصورة: ${code}` : '',
             message ? `التفاصيل: ${message}` : ''
           ]
         : [
@@ -122,6 +126,7 @@
             email ? `Email: ${email}` : '',
             phone ? `Phone: ${phone}` : '',
             interest ? `Interest: ${interestLabel(interest)}` : '',
+            code ? `Image code: ${code}` : '',
             message ? `Details: ${message}` : ''
           ];
       const text = lines.filter(Boolean).join('\n');
@@ -152,6 +157,8 @@
     'accessories.html': 'store',
     'custom.html': 'projects',
     'custom-curtains.html': 'projects',
+    'projects.html': 'projects',
+    'project.html': 'projects',
     'about.html': 'menu',
     'contact.html': 'store',
     'consult.html': 'consult',
@@ -250,7 +257,12 @@
       'acc-tracks': 'dept.accTracks',
       'acc-tiebacks': 'dept.accTiebacks',
       'acc-rings': 'dept.accRings',
-      'acc-finials': 'dept.accFinials'
+      'acc-finials': 'dept.accFinials',
+      'اكسسوارات': 'nav.accessories',
+      'إكسسوارات': 'nav.accessories',
+      'تكسسورات': 'nav.accessories',
+      'شاتر': 'nav.shutters',
+      'شتر': 'nav.shutters'
     };
     if (known[folder]) return t(known[folder]);
     const item = (PAJOMAR.allFolders || PAJOMAR.folders || []).find(f => f.folder === folder || f.slug === folder);
@@ -266,6 +278,17 @@
     }
   }
 
+  function isMediaVideo(url) {
+    return /\.(mp4|webm|mov|m4v)(\?|$)/i.test(String(url || ''));
+  }
+
+  function folderCodePrefix(folder) {
+    const key = String(folder || '');
+    if (key === 'شاتر' || key === 'شتر') return 'SHUTTER';
+    if (key === 'اكسسوارات' || key === 'إكسسوارات' || key === 'تكسسورات') return 'ACC';
+    return key;
+  }
+
   function productImageCode(product) {
     if (!product) return 'IMG-01';
     const folder = String(product.folderId || product.imageFolder || product.id || 'img')
@@ -275,7 +298,27 @@
       ? String(product.galleryIndex + 1).padStart(2, '0')
       : '';
     const num = fromIndex || (/^\d+$/.test(stem) ? stem.padStart(2, '0') : '01');
-    return `${folder}-${num}`.replace(/\s+/g, '-').toUpperCase();
+    return `${folderCodePrefix(folder)}-${num}`.replace(/\s+/g, '-').toUpperCase();
+  }
+
+  function productQuoteUrl(code) {
+    const safeCode = String(code || '').trim();
+    const q = safeCode ? `?code=${encodeURIComponent(safeCode)}` : '';
+    return `contact.html${q}#quote`;
+  }
+
+  function initQuoteProductCode() {
+    const params = new URLSearchParams(window.location.search);
+    const code = (params.get('code') || '').trim();
+    if (!code) return;
+    const message = document.querySelector('#message');
+    if (!message) return;
+    const lang = (typeof I18n !== 'undefined' && I18n.getLang) ? I18n.getLang() : 'en';
+    const pref = lang === 'ar'
+      ? `أريد طلب المنتج\nكود الصورة: ${code}`
+      : `I'd like to order this product\nImage code: ${code}`;
+    if (!String(message.value || '').trim()) message.value = pref;
+    message.dataset.productCode = code;
   }
 
   function deptHref(dept) {
@@ -350,7 +393,7 @@
           ${megaDeptHTML('shutters', 'nav.shutters')}
           ${megaDeptHTML('custom', 'nav.custom')}
           ${megaDeptHTML('accessories', 'nav.accessories')}
-          <a href="custom-curtains.html" class="nav-link" data-page="projects">${t('nav.projects')}</a>
+          <a href="projects.html" class="nav-link" data-page="projects">${t('nav.projects')}</a>
           <a href="consult.html" class="nav-link" data-page="consult">${t('nav.consult')}</a>
           <a href="about.html" class="nav-link" data-page="about">${t('nav.about')}</a>
           <a href="contact.html" class="nav-link" data-page="contact">${t('nav.contact')}</a>
@@ -373,7 +416,7 @@
     const page = window.location.pathname.split('/').pop().replace('.html', '') || 'index';
     document.querySelectorAll('.nav-link').forEach(link => {
       const href = link.getAttribute('href').replace('.html', '').replace('index', 'home');
-      if (href.includes(page) || (page === 'index' && href === 'home') || (page === 'product' && href === 'curtains')) {
+      if (href.includes(page) || (page === 'index' && href === 'home') || (page === 'product' && href === 'curtains') || (page === 'project' && href === 'projects')) {
         link.classList.add('active');
       }
     });
@@ -454,7 +497,7 @@
         <a href="contact.html" class="mobile-nav-item${current === 'store' ? ' active' : ''}" data-nav="store">
           ${ICONS.pin}<span>${t('nav.store')}</span>
         </a>
-        <a href="custom-curtains.html" class="mobile-nav-item${current === 'projects' ? ' active' : ''}" data-nav="projects">
+        <a href="projects.html" class="mobile-nav-item${current === 'projects' ? ' active' : ''}" data-nav="projects">
           ${ICONS.curtains}<span>${t('nav.projects')}</span>
         </a>
       </div>
@@ -504,7 +547,7 @@
           </div>
         </div>`;
         }).join('')}
-        <a href="custom-curtains.html" class="mobile-menu-link">${t('nav.projects')}</a>
+        <a href="projects.html" class="mobile-menu-link">${t('nav.projects')}</a>
         <a href="consult.html" class="mobile-menu-link">${t('nav.consult')}</a>
         <a href="about.html" class="mobile-menu-link">${t('nav.about')}</a>
         <a href="contact.html" class="mobile-menu-link">${t('nav.contact')}</a>
@@ -750,12 +793,16 @@
     const folderId = product.folderId || product.imageFolder || product.id;
     const code = productImageCode(product);
     const href = `product.html?id=${encodeURIComponent(folderId)}${product.galleryIndex != null ? `&img=${product.galleryIndex}` : ''}`;
+    const media = isMediaVideo(product.image)
+      ? `<video class="img-primary" src="${product.image}" muted playsinline preload="metadata" aria-label="${esc(code)}"></video>`
+      : `<img class="img-primary" src="${product.image}" alt="${esc(code)}" loading="lazy">`;
 
     return `
-      <article class="product-card fade-in">
+      <article class="product-card fade-in${isMediaVideo(product.image) ? ' product-card--video' : ''}">
         <div class="product-card-image">
           <a href="${href}">
-            <img class="img-primary" src="${product.image}" alt="${esc(code)}" loading="lazy">
+            ${media}
+            ${isMediaVideo(product.image) ? '<span class="product-card-video-badge" aria-hidden="true">▶</span>' : ''}
           </a>
           <div class="product-card-actions">
             <button class="btn quick-view-btn" data-id="${esc(folderId)}" data-img="${product.galleryIndex ?? 0}">${t('product.quickView')}</button>
@@ -764,7 +811,7 @@
         </div>
         <div class="product-card-info">
           <a href="${href}"><h3>${esc(code)}</h3></a>
-          <a href="contact.html#quote" class="product-card-request">${t('product.requestProduct')}</a>
+          <a href="${productQuoteUrl(code)}" class="product-card-request">${t('product.requestProduct')}</a>
         </div>
       </article>
     `;
@@ -797,11 +844,13 @@
       }
 
       if (state.search) {
-        const q = state.search.toLowerCase();
-        items = items.filter(p =>
-          (p.folderId || p.imageFolder || '').toLowerCase().includes(q) ||
-          (p.name || '').toLowerCase().includes(q)
-        );
+        const q = state.search.toLowerCase().trim();
+        items = items.filter(p => {
+          const code = productImageCode(p).toLowerCase();
+          return code.includes(q) ||
+            (p.folderId || p.imageFolder || '').toLowerCase().includes(q) ||
+            (p.name || '').toLowerCase().includes(q);
+        });
       }
 
       switch (state.sort) {
@@ -880,9 +929,23 @@
       render();
     });
 
+    const searchInput = document.getElementById('listing-search');
+    if (searchInput) {
+      if (state.search) searchInput.value = state.search;
+      let searchTimer = null;
+      searchInput.addEventListener('input', () => {
+        clearTimeout(searchTimer);
+        searchTimer = setTimeout(() => {
+          state.search = searchInput.value.trim();
+          render();
+        }, 160);
+      });
+    }
+
     function clearAllFilters() {
       state.folders = [];
       state.search = '';
+      if (searchInput) searchInput.value = '';
       syncFilterUI();
       render();
     }
@@ -905,6 +968,11 @@
       document.querySelectorAll('.clear-filters-btn, .filter-clear').forEach(btn => {
         btn.textContent = btn.classList.contains('filter-clear') ? t('filter.clearAll') : t('filter.clear');
       });
+      if (searchInput) {
+        searchInput.placeholder = t('filter.searchCode');
+        const searchLabel = searchInput.closest('.listing-search')?.querySelector('[data-i18n="filter.searchCode"]');
+        if (searchLabel) searchLabel.textContent = t('filter.searchCode');
+      }
       bindFilterInputs();
       syncFilterUI();
       render();
@@ -963,16 +1031,25 @@
     });
     document.title = code + ' — PAJOMAR';
 
+    const renderMainMedia = (src, alt) => isMediaVideo(src)
+      ? `<video id="main-image" class="product-gallery-video" src="${src}" controls playsinline controlslist="nodownload noplaybackrate" aria-label="${esc(alt)}"></video>`
+      : `<img id="main-image" src="${src}" alt="${esc(alt)}">`;
+
+    const renderThumb = (src, i) => isMediaVideo(src)
+      ? `<button class="${i === activeIndex ? 'active' : ''}" data-src="${src}" data-video="1"><video src="${src}" muted playsinline preload="metadata" aria-hidden="true"></video><span class="thumb-video-mark">▶</span></button>`
+      : `<button class="${i === activeIndex ? 'active' : ''}" data-src="${src}"><img src="${src}" alt=""></button>`;
+
+    const dept = folderDepartment(product.imageFolder || product.id) || 'curtains';
+    const deptPage = deptHref(dept);
+
     container.innerHTML = `
       <div class="product-gallery">
         <div class="product-gallery-main">
-          <img id="main-image" src="${uniqueGallery[activeIndex]}" alt="${esc(code)}">
+          ${renderMainMedia(uniqueGallery[activeIndex], code)}
         </div>
         ${uniqueGallery.length > 1 ? `
         <div class="product-gallery-thumbs">
-          ${uniqueGallery.map((src, i) => `
-            <button class="${i === activeIndex ? 'active' : ''}" data-src="${src}"><img src="${src}" alt=""></button>
-          `).join('')}
+          ${uniqueGallery.map((src, i) => renderThumb(src, i)).join('')}
         </div>` : ''}
       </div>
       <div class="product-info">
@@ -982,17 +1059,32 @@
           <div class="product-meta-item"><label>${t('product.code')}</label><span>${esc(code)}</span></div>
         </div>
         <div class="product-actions">
-          <a href="contact.html#quote" class="btn btn-primary">${t('product.requestProduct')}</a>
-          <a href="curtains.html?folder=${encodeURIComponent(product.imageFolder || product.id)}" class="btn btn-outline">${t('nav.curtains')}</a>
+          <a href="${productQuoteUrl(code)}" class="btn btn-primary" id="product-order-btn">${t('product.requestProduct')}</a>
+          <a href="${deptPage}?folder=${encodeURIComponent(product.imageFolder || product.id)}" class="btn btn-outline">${t(dept === 'shutters' ? 'nav.shutters' : 'nav.curtains')}</a>
         </div>
       </div>
     `;
 
+    const mainWrap = container.querySelector('.product-gallery-main');
+    const orderBtn = container.querySelector('#product-order-btn');
     container.querySelectorAll('.product-gallery-thumbs button').forEach(btn => {
       btn.addEventListener('click', () => {
         container.querySelectorAll('.product-gallery-thumbs button').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
-        document.getElementById('main-image').src = btn.dataset.src;
+        const src = btn.dataset.src;
+        const nextCode = productImageCode({
+          ...product,
+          folderId: product.imageFolder || product.id,
+          galleryIndex: uniqueGallery.indexOf(src),
+          image: src
+        });
+        if (mainWrap) mainWrap.innerHTML = renderMainMedia(src, nextCode);
+        const titleEl = container.querySelector('.product-info h1');
+        const codeEl = container.querySelector('.product-meta-item span');
+        if (titleEl) titleEl.textContent = nextCode;
+        if (codeEl) codeEl.textContent = nextCode;
+        if (orderBtn) orderBtn.href = productQuoteUrl(nextCode);
+        document.title = nextCode + ' — PAJOMAR';
       });
     });
 
@@ -1062,13 +1154,15 @@
     }
     modal.innerHTML = `
       <div class="modal-content" style="display:grid;grid-template-columns:1fr 1fr;gap:32px;padding:32px">
-        <img src="${src}" alt="${esc(code)}" style="width:100%;border-radius:8px;object-fit:cover">
+        ${isMediaVideo(src)
+          ? `<video src="${src}" controls playsinline controlslist="nodownload noplaybackrate" style="width:100%;border-radius:8px;background:#000"></video>`
+          : `<img src="${src}" alt="${esc(code)}" style="width:100%;border-radius:8px;object-fit:cover">`}
         <div>
           <button class="search-close" style="float:right" aria-label="Close">${ICONS.close}</button>
           <p class="eyebrow">${esc(t('product.code'))}</p>
           <h2 style="margin:8px 0">${esc(code)}</h2>
           <a href="product.html?id=${encodeURIComponent(product.id)}&img=${imgIndex}" class="btn btn-primary">${t('product.viewProduct')}</a>
-          <a href="contact.html#quote" class="btn btn-outline" style="margin-inline-start:8px">${t('product.requestProduct')}</a>
+          <a href="${productQuoteUrl(code)}" class="btn btn-outline" style="margin-inline-start:8px">${t('product.requestProduct')}</a>
         </div>
       </div>
     `;
@@ -1124,12 +1218,17 @@
     injectThemeToggle();
     if (typeof window._curtainsRender === 'function') window._curtainsRender();
     if (typeof window._productRender === 'function') window._productRender();
+    if (typeof window._projectsRender === 'function') window._projectsRender();
+    if (typeof window._projectDetailRender === 'function') window._projectDetailRender();
     applyCurtainImages();
     initProductCardGalleryCycle();
     initHomePage();
     fillContactExtras();
     const relatedTitle = document.querySelector('.related-section h2');
-    if (relatedTitle) relatedTitle.textContent = t('product.related');
+    if (relatedTitle) {
+      const key = relatedTitle.getAttribute('data-i18n') || 'product.related';
+      relatedTitle.textContent = t(key);
+    }
   }
 
   function initHomeRoomsScroller(track) {
@@ -1240,9 +1339,9 @@
     if (shopGrid) {
       const depts = [
         { id: 'curtains', label: 'nav.curtains', folder: 'modern', prefer: 3 },
-        { id: 'shutters', label: 'nav.shutters', folder: 'shutter-vertical', prefer: 0 },
+        { id: 'shutters', label: 'nav.shutters', folder: (typeof SHUTTER_GALLERY_FOLDER !== 'undefined' && SHUTTER_GALLERY_FOLDER) || 'شاتر', prefer: 0 },
         { id: 'custom', label: 'nav.custom', folder: 'custom-pinch', prefer: 0 },
-        { id: 'accessories', label: 'nav.accessories', folder: 'acc-rods', prefer: 0 }
+        { id: 'accessories', label: 'nav.accessories', folder: (typeof ACCESSORY_GALLERY_FOLDER !== 'undefined' && ACCESSORY_GALLERY_FOLDER) || 'اكسسوارات', prefer: 0 }
       ];
       shopGrid.innerHTML = depts.map(d => {
         let cover = (PAJOMAR.deptCovers && PAJOMAR.deptCovers[d.id]) || '';
@@ -1291,8 +1390,9 @@
       }
       grid.innerHTML = marketing.length
         ? marketing.slice(0, 4).map((src, i) => `
-            <a href="curtains.html" class="home-cat-card fade-in visible">
+            <a href="curtains.html" class="home-cat-card home-cat-card--${i + 1} fade-in visible">
               <img src="${src}" alt="" loading="${i === 0 ? 'eager' : 'lazy'}">
+              <span>${esc(t('home.lookLabel').replace('{n}', String(i + 1)))}</span>
             </a>
           `).join('')
         : '';
@@ -1329,6 +1429,9 @@
     }
 
     if (projectMedia) {
+      const fromSites = (PAJOMAR.smallProjects || [])
+        .flatMap((p) => (p.gallery || []).slice(0, 1))
+        .filter((src) => src && !src.includes('_fallback'));
       const softFolders = [
         ['sheer', 1],
         ['sheer', 2],
@@ -1336,11 +1439,13 @@
         ['living', 1],
         ['bedroom', 3]
       ];
-      const imgs = [];
-      for (const [folder, idx] of softFolders) {
-        const src = pickFromFolder(folder, idx) || pickFromFolder(folder, 1) || pickFromFolder(folder, 0);
-        if (src) imgs.push(src);
-        if (imgs.length >= 3) break;
+      const imgs = fromSites.slice(0, 3);
+      if (imgs.length < 3) {
+        for (const [folder, idx] of softFolders) {
+          const src = pickFromFolder(folder, idx) || pickFromFolder(folder, 1) || pickFromFolder(folder, 0);
+          if (src && !imgs.includes(src)) imgs.push(src);
+          if (imgs.length >= 3) break;
+        }
       }
       projectMedia.innerHTML = imgs.map(src => `<img src="${src}" alt="" loading="lazy">`).join('');
     }
@@ -1354,8 +1459,178 @@
       });
     }
 
+    initHomeReviewVideos();
     initDrape();
     observeFadeIn();
+  }
+
+  function initHomeReviewVideos() {
+    const root = document.getElementById('home-review-videos');
+    if (!root) return;
+
+    const videos = PAJOMAR.homeReviewVideos || [];
+    if (!videos.length) {
+      root.innerHTML = '';
+      return;
+    }
+
+    let index = 0;
+    root.className = 'home-review-reel';
+    root.innerHTML = `
+      <div class="home-review-reel-stage">
+        <button type="button" class="home-review-nav" data-review-dir="-1" aria-label="Previous">
+          <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M15 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="home-review-reel-track" aria-hidden="false">
+          <button type="button" class="home-review-phone home-review-phone--side" data-review-slot="-1" aria-label="Previous clip">
+            <span class="home-review-phone-bezel">
+              <video muted playsinline preload="metadata"></video>
+            </span>
+          </button>
+          <div class="home-review-phone home-review-phone--main" data-review-slot="0">
+            <span class="home-review-phone-bezel">
+              <span class="home-review-phone-notch" aria-hidden="true"></span>
+              <video id="home-review-player" muted playsinline preload="metadata"></video>
+              <button type="button" class="home-review-play" aria-label="${esc(t('home.reviews.play'))}">
+                <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>
+              </button>
+            </span>
+            <p class="home-review-sill" id="home-review-caption"></p>
+          </div>
+          <button type="button" class="home-review-phone home-review-phone--side" data-review-slot="1" aria-label="Next clip">
+            <span class="home-review-phone-bezel">
+              <video muted playsinline preload="metadata"></video>
+            </span>
+          </button>
+        </div>
+        <button type="button" class="home-review-nav" data-review-dir="1" aria-label="Next">
+          <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M9 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>`;
+
+    const caption = root.querySelector('#home-review-caption');
+    const mainPhone = root.querySelector('.home-review-phone--main');
+    const mainPlayer = root.querySelector('#home-review-player');
+    const playBtn = root.querySelector('.home-review-play');
+    const sidePhones = [...root.querySelectorAll('.home-review-phone--side')];
+
+    const at = (offset) => videos[(index + offset + videos.length) % videos.length];
+
+    const fillPhone = (el, item) => {
+      const video = el?.querySelector('video');
+      if (!video || !item) return;
+      video.pause();
+      if (video.src !== item.src) {
+        video.src = item.src;
+        video.load();
+      }
+    };
+
+    const setActive = (next, animate = true) => {
+      index = (next + videos.length) % videos.length;
+      if (animate && mainPhone) {
+        mainPhone.classList.remove('is-flip');
+        void mainPhone.offsetWidth;
+        mainPhone.classList.add('is-flip');
+      }
+      fillPhone(mainPhone, at(0));
+      sidePhones.forEach((phone) => {
+        const slot = Number(phone.dataset.reviewSlot || 0);
+        fillPhone(phone, at(slot));
+      });
+      if (caption) {
+        caption.textContent = `${String(index + 1).padStart(2, '0')} / ${String(videos.length).padStart(2, '0')} · ${t('home.reviews.clip').replace('{n}', String(index + 1))}`;
+      }
+      root.classList.remove('is-playing');
+    };
+
+    root.querySelectorAll('[data-review-dir]').forEach((btn) => {
+      btn.addEventListener('click', () => setActive(index + Number(btn.dataset.reviewDir || 1)));
+    });
+    sidePhones.forEach((phone) => {
+      phone.addEventListener('click', () => setActive(index + Number(phone.dataset.reviewSlot || 0)));
+    });
+
+    playBtn?.addEventListener('click', () => {
+      const item = at(0);
+      openReviewCinema(mainPlayer?.src || item.src, caption?.textContent || '');
+    });
+
+    mainPlayer?.addEventListener('pointerenter', () => {
+      if (!window.matchMedia('(hover: hover)').matches) return;
+      const p = mainPlayer.play();
+      if (p && typeof p.catch === 'function') p.catch(() => {});
+      root.classList.add('is-playing');
+    });
+    mainPlayer?.addEventListener('pointerleave', () => {
+      mainPlayer.pause();
+      try { mainPlayer.currentTime = 0; } catch (err) { /* ignore */ }
+      root.classList.remove('is-playing');
+    });
+
+    let touchX = null;
+    root.addEventListener('touchstart', (e) => {
+      touchX = e.changedTouches?.[0]?.clientX ?? null;
+    }, { passive: true });
+    root.addEventListener('touchend', (e) => {
+      if (touchX == null) return;
+      const x = e.changedTouches?.[0]?.clientX;
+      if (x == null) return;
+      const dx = x - touchX;
+      touchX = null;
+      if (Math.abs(dx) < 40) return;
+      const rtl = document.documentElement.getAttribute('dir') === 'rtl';
+      setActive(index + ((dx < 0) === rtl ? -1 : 1));
+    }, { passive: true });
+
+    setActive(0, false);
+  }
+
+  function openReviewCinema(src, label) {
+    let cinema = document.getElementById('home-review-cinema');
+    if (!cinema) {
+      cinema = document.createElement('div');
+      cinema.id = 'home-review-cinema';
+      cinema.className = 'home-review-cinema';
+      cinema.hidden = true;
+      cinema.innerHTML = `
+        <div class="home-review-cinema-backdrop" data-cinema-close></div>
+        <div class="home-review-cinema-panel" role="dialog" aria-modal="true">
+          <button type="button" class="home-review-cinema-close" data-cinema-close aria-label="Close">&times;</button>
+          <p class="home-review-cinema-label" id="home-review-cinema-label"></p>
+          <video id="home-review-cinema-video" controls playsinline controlslist="nodownload noplaybackrate"></video>
+        </div>`;
+      document.body.appendChild(cinema);
+      cinema.querySelectorAll('[data-cinema-close]').forEach((el) => {
+        el.addEventListener('click', () => {
+          cinema.hidden = true;
+          document.body.classList.remove('cinema-open');
+          const v = document.getElementById('home-review-cinema-video');
+          if (v) {
+            v.pause();
+            v.removeAttribute('src');
+            v.load();
+          }
+        });
+      });
+      if (!cinema.dataset.escapeBound) {
+        cinema.dataset.escapeBound = '1';
+        document.addEventListener('keydown', (e) => {
+          if (e.key !== 'Escape' || cinema.hidden) return;
+          cinema.querySelector('[data-cinema-close]')?.click();
+        });
+      }
+    }
+    const cinemaVideo = document.getElementById('home-review-cinema-video');
+    const cinemaLabel = document.getElementById('home-review-cinema-label');
+    if (cinemaLabel) cinemaLabel.textContent = label || '';
+    if (cinemaVideo) {
+      cinemaVideo.src = src;
+      cinema.hidden = false;
+      document.body.classList.add('cinema-open');
+      const playPromise = cinemaVideo.play();
+      if (playPromise && typeof playPromise.catch === 'function') playPromise.catch(() => {});
+    }
   }
 
   function initDrape() {
@@ -1753,6 +2028,103 @@
       });
     });
   }
+
+  /* ── Small projects portfolio (مشاريع صغيره) ── */
+  function photosLabel(count) {
+    const n = Number(count) || 0;
+    return t('projects.photos').replace('{n}', String(n));
+  }
+
+  function renderProjectTile(project, index = 0) {
+    const gallery = (project.gallery || []).filter(Boolean);
+    const thumbs = gallery.slice(0, 3);
+    const mediaClass = thumbs.length <= 1
+      ? 'project-tile-media project-tile-media--single'
+      : thumbs.length === 2
+        ? 'project-tile-media project-tile-media--duo'
+        : 'project-tile-media';
+    const imgs = thumbs.map((src, i) =>
+      `<img src="${src}" alt="" loading="${index < 4 && i === 0 ? 'eager' : 'lazy'}" decoding="async">`
+    ).join('');
+    return `
+      <a href="project.html?id=${encodeURIComponent(project.id)}" class="project-tile fade-in">
+        <div class="${mediaClass}">${imgs}</div>
+        <div class="project-tile-shade" aria-hidden="true"></div>
+        <div class="project-tile-meta">
+          <h3>${esc(project.name)}</h3>
+          <span>${esc(photosLabel(project.count || gallery.length))}</span>
+        </div>
+      </a>`;
+  }
+
+  window.initProjectsPage = function () {
+    const grid = document.getElementById('projects-grid');
+    const countEl = document.getElementById('projects-count');
+    const heroMedia = document.getElementById('projects-hero-media');
+    const projects = PAJOMAR.smallProjects || [];
+
+    if (heroMedia) {
+      const covers = projects
+        .map((p) => p.image)
+        .filter((src) => src && !src.includes('_fallback'))
+        .slice(0, 3);
+      heroMedia.innerHTML = covers.map((src) => `<img src="${src}" alt="">`).join('');
+    }
+
+    if (countEl) {
+      countEl.textContent = t('projects.count').replace('{n}', String(projects.length));
+    }
+
+    if (grid) {
+      grid.innerHTML = projects.length
+        ? projects.map(renderProjectTile).join('')
+        : `<p class="empty-state">${esc(t('projects.empty'))}</p>`;
+    }
+
+    observeFadeIn();
+    window._projectsRender = initProjectsPage;
+  };
+
+  window.initProjectDetailPage = function () {
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get('id');
+    const projects = PAJOMAR.smallProjects || [];
+    const project = projects.find((p) => p.id === id || p.folder === id);
+    const head = document.getElementById('project-detail-head');
+    const galleryEl = document.getElementById('project-gallery');
+    const relatedEl = document.getElementById('related-projects');
+
+    if (!project) {
+      if (head) head.innerHTML = `<p class="empty-state">${esc(t('projects.notFound'))}</p>`;
+      if (galleryEl) galleryEl.innerHTML = '';
+      return;
+    }
+
+    document.title = `${project.name} — PAJOMAR`;
+
+    if (head) {
+      head.innerHTML = `
+        <p class="eyebrow">${esc(t('projects.eyebrow'))}</p>
+        <h1>${esc(project.name)}</h1>
+        <p>${esc(photosLabel(project.count || project.gallery.length))}</p>`;
+    }
+
+    if (galleryEl) {
+      const gallery = project.gallery || [];
+      galleryEl.innerHTML = gallery.map((src, i) => `
+        <figure class="fade-in">
+          <img src="${src}" alt="${esc(project.name)} ${i + 1}" loading="${i < 2 ? 'eager' : 'lazy'}" decoding="async">
+        </figure>`).join('');
+    }
+
+    if (relatedEl) {
+      const related = projects.filter((p) => p.id !== project.id).slice(0, 4);
+      relatedEl.innerHTML = related.map(renderProjectTile).join('');
+    }
+
+    observeFadeIn();
+    window._projectDetailRender = initProjectDetailPage;
+  };
 
   /* ── Init ── */
   document.addEventListener('DOMContentLoaded', () => {

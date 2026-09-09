@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" class="is-loading">
+<head>
+  <meta charset="UTF-8">
+  <script>try{if(localStorage.getItem('pajomar-theme')==='dark')document.documentElement.classList.add('theme-dark')}catch(e){}</script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="PAJOMAR project gallery — curtains and shutters installed on site.">
+  <title>Project — PAJOMAR</title>
+  <link rel="icon" href="assets/logo.jpg" type="image/jpeg">
+  <link rel="stylesheet" href="css/main.css?v=fix-project-r1">
+</head>
+<body data-i18n-title="page.title.project">
+
+  <div id="page-loader" class="page-loader" role="status" aria-label="PAJOMAR" aria-busy="true">
+    <div class="page-loader__inner" aria-hidden="true">
+      <div class="page-loader__logo"><img src="assets/logo.jpg" alt=""></div>
+    </div>
+  </div>
+
+  <div class="container project-detail-wrap">
+    <a href="projects.html" class="project-back link-arrow" data-i18n="projects.back">All projects</a>
+    <header class="project-detail-head" id="project-detail-head"></header>
+    <div class="project-gallery" id="project-gallery"></div>
+    <div class="project-detail-actions">
+      <a href="contact.html#quote" class="btn btn-primary" data-i18n="nav.quote">Request a Quote</a>
+      <a href="projects.html" class="btn btn-outline" data-i18n="projects.back">All projects</a>
+    </div>
+  </div>
+
+  <section class="related-section">
+    <div class="container">
+      <h2 class="display-md" data-i18n="projects.more">More projects</h2>
+      <div class="projects-mosaic projects-mosaic--compact" id="related-projects"></div>
+    </div>
+  </section>
+
+  <script src="js/images-manifest.js?v=fix-project-r1"></script>
+  <script src="js/image-lib.js?v=fix-project-r1"></script>
+  <script src="js/data.js?v=fix-project-r1"></script>
+  <script src="js/i18n.js?v=fix-project-r1"></script>
+  <script src="js/app.js?v=fix-project-r1"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', initProjectDetailPage);
+  </script>
+</body>
+</html>

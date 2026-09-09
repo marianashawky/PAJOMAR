@@ -18,6 +18,11 @@ const FOLDER_LABELS = {
   'shutter-wood': 'Wood',
   'shutter-blackout': 'Blackout',
   'shutter-vertical': 'Vertical',
+  'شاتر': 'Shutters',
+  'شتر': 'Shutters',
+  'اكسسوارات': 'Accessories',
+  'إكسسوارات': 'Accessories',
+  'تكسسورات': 'Accessories',
   'custom-pinch': 'Pinch pleat',
   'custom-wave': 'Wavy',
   'custom-eyelet': 'Eyelet',
@@ -45,8 +50,72 @@ const SKIP_FOLDERS = new Set([
   'dept-curtains',
   'dept-shutters',
   'dept-custom',
-  'dept-accessories'
+  'dept-accessories',
+  'مشاريع صغيره',
+  'ريفيوهات'
 ]);
+
+const SMALL_PROJECTS_PREFIX = 'مشاريع صغيره/';
+const SHUTTER_GALLERY_FOLDER = ImageLib.has('شاتر') ? 'شاتر' : (ImageLib.has('شتر') ? 'شتر' : '');
+const ACCESSORY_GALLERY_CANDIDATES = ['اكسسوارات', 'إكسسوارات', 'تكسسورات'];
+const ACCESSORY_GALLERY_FOLDER = ACCESSORY_GALLERY_CANDIDATES.find((name) => ImageLib.has(name)) || '';
+
+/* Best-looking accessory shots first (studio / clear product photos) */
+const ACCESSORY_PRIORITY = [
+  'WhatsApp Image 2026-09-01 at 10.40.15 AM (7).jpeg',
+  'WhatsApp Image 2026-09-01 at 10.40.14 AM.jpeg',
+  'WhatsApp Image 2026-09-01 at 10.40.16 AM (5).jpeg',
+  'WhatsApp Image 2026-09-01 at 10.40.14 AM (7).jpeg',
+  'WhatsApp Image 2026-09-01 at 10.40.15 AM (1).jpeg',
+  'WhatsApp Image 2026-09-01 at 10.40.11 AM (4).jpeg',
+  'WhatsApp Image 2026-09-01 at 10.40.16 AM.jpeg',
+  'WhatsApp Image 2026-09-01 at 10.40.17 AM.jpeg',
+  'WhatsApp Image 2026-09-01 at 10.40.14 AM (4).jpeg',
+  'WhatsApp Image 2026-09-01 at 10.40.14 AM (1).jpeg',
+  'WhatsApp Image 2026-09-01 at 10.40.15 AM (3).jpeg',
+  'WhatsApp Image 2026-09-01 at 10.40.12 AM (6).jpeg',
+  'WhatsApp Image 2026-09-01 at 10.40.16 AM (4).jpeg',
+  'WhatsApp Image 2026-09-01 at 10.40.12 AM (5).jpeg',
+  'WhatsApp Image 2026-09-01 at 10.40.15 AM (5).jpeg',
+  'WhatsApp Image 2026-09-01 at 10.40.12 AM.jpeg',
+  'WhatsApp Image 2026-09-01 at 10.40.16 AM (6).jpeg',
+  'WhatsApp Image 2026-09-01 at 10.40.11 AM (2).jpeg',
+  'WhatsApp Image 2026-09-01 at 10.40.13 AM (2).jpeg',
+  'WhatsApp Image 2026-09-01 at 10.40.14 AM (2).jpeg',
+  'WhatsApp Image 2026-09-01 at 10.40.15 AM (4).jpeg',
+  'WhatsApp Image 2026-09-01 at 10.40.15 AM (2).jpeg',
+  'WhatsApp Image 2026-09-01 at 10.40.15 AM.jpeg',
+  'WhatsApp Image 2026-09-01 at 10.40.11 AM.jpeg',
+  'WhatsApp Image 2026-09-01 at 10.40.11 AM (1).jpeg'
+];
+
+function sortAccessoryFiles(files) {
+  const rank = new Map(ACCESSORY_PRIORITY.map((name, i) => [name, i]));
+  return [...files].sort((a, b) => {
+    const ra = rank.has(a) ? rank.get(a) : ACCESSORY_PRIORITY.length + 50;
+    const rb = rank.has(b) ? rank.get(b) : ACCESSORY_PRIORITY.length + 50;
+    if (ra !== rb) return ra - rb;
+    return String(a).localeCompare(String(b), undefined, { numeric: true });
+  });
+}
+
+function mediaUrl(folder, file) {
+  const folderPath = String(folder).split('/').map(encodeURIComponent).join('/');
+  return `assets/images/${folderPath}/${encodeURIComponent(file)}`;
+}
+
+function folderGallery(folder) {
+  let files = ImageLib.files(folder).slice();
+  if (ACCESSORY_GALLERY_FOLDER && folder === ACCESSORY_GALLERY_FOLDER) {
+    files = sortAccessoryFiles(files);
+  }
+  return files.map((file) => mediaUrl(folder, file));
+}
+
+function folderCover(folder) {
+  const gallery = folderGallery(folder);
+  return gallery[0] || ImageLib.url(folder);
+}
 
 const DEPT_PAGES = {
   curtains: 'curtains.html',
@@ -84,13 +153,42 @@ const CURTAIN_FOLDER_ORDER = [
 
 function folderDepartment(folder) {
   if (SKIP_FOLDERS.has(folder)) return '';
+  if (String(folder).startsWith(SMALL_PROJECTS_PREFIX)) return '';
   if (CURTAIN_TYPE_FOLDERS.has(folder)) return 'curtains';
-  if (String(folder).startsWith('shutter-')) return 'shutters';
+  /* Old shutter-* lookbooks retired — use شاتر gallery only */
+  if (String(folder).startsWith('shutter-')) return '';
+  if (folder === 'شاتر' || folder === 'شتر') return 'shutters';
+  /* Prefer اكسسوارات gallery; retire old acc-* lookbooks when present */
+  if (ACCESSORY_GALLERY_FOLDER && String(folder).startsWith('acc-')) return '';
+  if (ACCESSORY_GALLERY_CANDIDATES.includes(folder)) return 'accessories';
   if (String(folder).startsWith('acc-')) return 'accessories';
   if (folder === 'custom') return '';
   if (String(folder).startsWith('custom-')) return 'custom';
   if (String(folder).startsWith('dept-')) return '';
   return '';
+}
+
+function projectSiteName(folder) {
+  const parts = String(folder).split('/');
+  return parts[parts.length - 1] || folder;
+}
+
+function buildSmallProjects() {
+  return ImageLib.folders()
+    .filter((name) => name.startsWith(SMALL_PROJECTS_PREFIX) && ImageLib.has(name))
+    .map((folder) => {
+      const gallery = ImageLib.getAll(folder);
+      const name = projectSiteName(folder);
+      return {
+        id: folder,
+        folder,
+        name,
+        image: gallery[0] || '',
+        gallery,
+        count: gallery.length
+      };
+    })
+    .sort((a, b) => a.name.localeCompare(b.name, 'ar'));
 }
 
 const HOME_MARKETING_FOLDER = 'صور تسويق';
@@ -121,20 +219,23 @@ function catalogFolders(dept) {
 }
 
 function mapFolderRecords(folders) {
-  return folders.map((folder) => ({
-    id: folder,
-    slug: folder,
-    name: folderLabel(folder),
-    folder,
-    department: folderDepartment(folder),
-    image: ImageLib.url(folder),
-    gallery: ImageLib.getAll(folder),
-    count: ImageLib.files(folder).length
-  }));
+  return folders.map((folder) => {
+    const gallery = folderGallery(folder);
+    return {
+      id: folder,
+      slug: folder,
+      name: folderLabel(folder),
+      folder,
+      department: folderDepartment(folder),
+      image: gallery[0] || folderCover(folder),
+      gallery,
+      count: gallery.length
+    };
+  });
 }
 
 function buildFolderProduct(folder) {
-  const gallery = ImageLib.getAll(folder);
+  const gallery = folderGallery(folder);
   const name = folderLabel(folder);
   return {
     id: folder,
@@ -214,16 +315,24 @@ function customHeadingRecords() {
 
 PAJOMAR.departments = {
   curtains: mapFolderRecords(catalogFolders('curtains')),
-  shutters: mapFolderRecords(catalogFolders('shutters')),
+  shutters: SHUTTER_GALLERY_FOLDER
+    ? mapFolderRecords([SHUTTER_GALLERY_FOLDER])
+    : mapFolderRecords(catalogFolders('shutters')),
   custom: customHeadingRecords(),
-  accessories: mapFolderRecords(catalogFolders('accessories'))
+  accessories: ACCESSORY_GALLERY_FOLDER
+    ? mapFolderRecords([ACCESSORY_GALLERY_FOLDER])
+    : mapFolderRecords(catalogFolders('accessories'))
 };
 
 PAJOMAR.deptCovers = {
   curtains: ImageLib.url('modern', 3) || ImageLib.url('sheer', 1) || ImageLib.url('sheer'),
-  shutters: ImageLib.url('shutter-vertical'),
+  shutters: SHUTTER_GALLERY_FOLDER
+    ? ImageLib.url(SHUTTER_GALLERY_FOLDER)
+    : ImageLib.url('shutter-vertical'),
   custom: ImageLib.url('custom-pinch'),
-  accessories: ImageLib.url('acc-rods')
+  accessories: ACCESSORY_GALLERY_FOLDER
+    ? folderCover(ACCESSORY_GALLERY_FOLDER)
+    : ImageLib.url('acc-rods')
 };
 
 PAJOMAR.folders = PAJOMAR.departments.curtains;
@@ -280,6 +389,44 @@ PAJOMAR.heroSlides = [
 if (!PAJOMAR.heroSlides.length) {
   PAJOMAR.heroSlides = catalogFolders('curtains').flatMap((folder) => ImageLib.getAll(folder));
 }
+
+PAJOMAR.smallProjects = buildSmallProjects();
+
+/** All client review videos from assets/images/ريفيوهات (+ nested folders) */
+const REVIEW_VIDEOS_ROOT = 'ريفيوهات';
+const VIDEO_FILE_RE = /\.(mp4|webm|mov|m4v)(\?|$)/i;
+
+function buildHomeReviewVideos() {
+  const folders = ImageLib.folders()
+    .filter((name) => name === REVIEW_VIDEOS_ROOT || name.startsWith(`${REVIEW_VIDEOS_ROOT}/`))
+    .sort((a, b) => a.localeCompare(b, 'ar'));
+
+  const out = [];
+  const seen = new Set();
+  folders.forEach((folder) => {
+    ImageLib.files(folder).forEach((file, fileIndex) => {
+      if (!VIDEO_FILE_RE.test(file)) return;
+      const src = ImageLib.url(folder, fileIndex);
+      if (!src || seen.has(src)) return;
+      seen.add(src);
+      const rel = folder === REVIEW_VIDEOS_ROOT ? file : `${folder.slice(REVIEW_VIDEOS_ROOT.length + 1)}/${file}`;
+      out.push({ file: rel, src });
+    });
+  });
+
+  /* Former #13 becomes #1 (rotate from 0-based index 12) */
+  const rotateAt = Math.min(12, out.length);
+  const rotated = out.length ? out.slice(rotateAt).concat(out.slice(0, rotateAt)) : out;
+
+  return rotated.map((item, i) => ({
+    id: `review-v${i + 1}`,
+    file: item.file,
+    src: item.src,
+    index: i + 1
+  }));
+}
+
+PAJOMAR.homeReviewVideos = buildHomeReviewVideos();
 
 PAJOMAR.homeMarketingFolder = HOME_MARKETING_FOLDER;
 /* مختارات — from assets/images/صور تسويق */

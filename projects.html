@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" class="is-loading">
+<head>
+  <meta charset="UTF-8">
+  <script>try{if(localStorage.getItem('pajomar-theme')==='dark')document.documentElement.classList.add('theme-dark')}catch(e){}</script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Explore PAJOMAR completed curtain and shutter projects across Egypt — compounds, villages, and residences.">
+  <title>Projects — PAJOMAR</title>
+  <link rel="icon" href="assets/logo.jpg" type="image/jpeg">
+  <link rel="stylesheet" href="css/main.css?v=projects1">
+</head>
+<body data-i18n-title="page.title.projects">
+
+  <div id="page-loader" class="page-loader" role="status" aria-label="PAJOMAR" aria-busy="true">
+    <div class="page-loader__inner" aria-hidden="true">
+      <div class="page-loader__logo"><img src="assets/logo.jpg" alt=""></div>
+    </div>
+  </div>
+
+  <section class="projects-hero" id="projects-hero" aria-label="Projects">
+    <div class="projects-hero-media" id="projects-hero-media" aria-hidden="true"></div>
+    <div class="projects-hero-veil" aria-hidden="true"></div>
+    <div class="container projects-hero-copy">
+      <p class="projects-hero-brand">PAJOMAR</p>
+      <h1 class="display-xl" data-i18n="projects.title">Projects</h1>
+      <p data-i18n="projects.desc">Real spaces we dressed — compounds, villages, and homes across Egypt.</p>
+    </div>
+  </section>
+
+  <section class="section projects-section">
+    <div class="container">
+      <div class="projects-toolbar fade-in">
+        <p class="projects-count" id="projects-count"></p>
+      </div>
+      <div class="projects-mosaic" id="projects-grid"></div>
+    </div>
+  </section>
+
+  <section class="cta-banner fade-in">
+    <h2 data-i18n="projects.ctaTitle">Start Your Project</h2>
+    <p data-i18n="projects.ctaDesc">Tell us about your space — we measure, design, and install.</p>
+    <a href="contact.html#quote" class="btn btn-primary" data-i18n="nav.quote">Request a Quote</a>
+  </section>
+
+  <script src="js/images-manifest.js"></script>
+  <script src="js/image-lib.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/i18n.js?v=projects1"></script>
+  <script src="js/app.js?v=projects1"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', initProjectsPage);
+  </script>
+</body>
+</html>

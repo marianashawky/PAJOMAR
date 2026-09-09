@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Accessories — PAJOMAR</title>
   <link rel="icon" href="assets/logo.jpg" type="image/jpeg">
-  <link rel="stylesheet" href="css/main.css?v=fix-filters-dark1">
+  <link rel="stylesheet" href="css/main.css?v=fix-quote-code1">
 </head>
 <body data-i18n-title="page.title.accessories" data-dept="accessories">
 
@@ -19,21 +19,16 @@
   <div class="page-hero">
     <div class="container">
       <h1 class="display-lg" data-i18n="accessories.title">Curtain accessories</h1>
-      <p data-i18n="accessories.desc">Rods, tracks, tiebacks, rings and finials — the finishing pieces that make a curtain hang as it should.</p>
+      <p data-i18n="accessories.desc">Rods, tracks, brackets, tapes and finishes — every piece that completes the curtain.</p>
     </div>
   </div>
 
   <div class="container">
-    <div class="listing-layout">
-      <aside class="filter-sidebar filter-panel" id="filter-sidebar" aria-label="Product filters"></aside>
+    <div class="listing-layout listing-layout--gallery">
       <div class="listing-main">
         <div class="listing-toolbar">
           <span class="listing-count" id="product-count">...</span>
           <div class="listing-controls">
-            <button class="filter-mobile-btn" id="filter-mobile-btn" aria-label="Open filters">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 6h16M7 12h10M10 18h4"/></svg>
-              <span data-i18n="filter.filters">Filters</span>
-            </button>
             <select class="sort-select" id="sort-select" aria-label="Sort products">
               <option value="featured" data-i18n="sort.featured">Featured</option>
               <option value="newest" data-i18n="sort.newest">Newest</option>
@@ -41,37 +36,18 @@
             </select>
           </div>
         </div>
-        <div class="active-filters" id="active-filters"></div>
         <div class="product-grid" id="product-grid"></div>
       </div>
     </div>
   </div>
 
-  <div class="filter-drawer-overlay" id="filter-drawer-overlay"></div>
-  <aside class="filter-drawer" id="filter-drawer" aria-label="Filter drawer">
-    <div class="filter-drawer-header">
-      <h3 data-i18n="filter.filters">Filters</h3>
-      <button id="filter-drawer-close" aria-label="Close filters">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 6l12 12M18 6L6 18"/></svg>
-      </button>
-    </div>
-    <div class="filter-drawer-body filter-panel" id="filter-drawer-body"></div>
-    <div class="filter-drawer-footer">
-      <button class="btn btn-outline clear-filters-btn" data-i18n="filter.clear">Clear All</button>
-      <button class="btn btn-primary" id="filter-apply" data-i18n="filter.apply">Apply Filters</button>
-    </div>
-  </aside>
-
-  <script src="js/images-manifest.js"></script>
-  <script src="js/image-lib.js"></script>
-  <script src="js/data.js"></script>
-  <script src="js/i18n.js?v=fix-home9"></script>
-  <script src="js/app.js?v=fix-home9"></script>
+  <script src="js/images-manifest.js?v=fix-quote-code1"></script>
+  <script src="js/image-lib.js?v=fix-quote-code1"></script>
+  <script src="js/data.js?v=fix-quote-code1"></script>
+  <script src="js/i18n.js?v=fix-quote-code1"></script>
+  <script src="js/app.js?v=fix-quote-code1"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      const filterHTML = getFilterHTML('accessories');
-      document.getElementById('filter-sidebar').innerHTML = filterHTML;
-      document.getElementById('filter-drawer-body').innerHTML = filterHTML;
       initCatalogPage('accessories');
     });
   </script>
