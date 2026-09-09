@@ -94,45 +94,183 @@
     return map[value] ? t(map[value]) : value;
   }
 
-  function initContactWhatsAppForm() {
-    const form = document.querySelector('.contact-form');
+  function quoteMessagePrefill(code) {
+    const safe = String(code || '').trim();
+    if (!safe) return '';
+    const lang = (typeof I18n !== 'undefined' && I18n.getLang) ? I18n.getLang() : 'en';
+    return lang === 'ar'
+      ? `أريد طلب المنتج\nكود الصورة: ${safe}`
+      : `I'd like to order this product\nImage code: ${safe}`;
+  }
+
+  function applyQuoteProductCode(form, code) {
+    if (!form) return;
+    const safe = String(code || '').trim();
+    const message = form.querySelector('[name="message"]');
+    if (!message) return;
+    if (safe) {
+      message.dataset.productCode = safe;
+      if (!String(message.value || '').trim()) message.value = quoteMessagePrefill(safe);
+    } else {
+      delete message.dataset.productCode;
+    }
+  }
+
+  function submitQuoteForm(form) {
+    const name = (form.querySelector('[name="name"]')?.value || '').trim();
+    const email = (form.querySelector('[name="email"]')?.value || '').trim();
+    const phone = (form.querySelector('[name="phone"]')?.value || '').trim();
+    const interest = form.querySelector('[name="interest"]')?.value || '';
+    const messageEl = form.querySelector('[name="message"]');
+    const message = (messageEl?.value || '').trim();
+    const code = (messageEl?.dataset.productCode || '').trim();
+    const lang = (typeof I18n !== 'undefined' && I18n.getLang) ? I18n.getLang() : 'en';
+    const lines = lang === 'ar'
+      ? [
+          'طلب عرض سعر — PAJOMAR',
+          `الاسم: ${name}`,
+          email ? `البريد: ${email}` : '',
+          phone ? `الهاتف: ${phone}` : '',
+          interest ? `الاهتمام: ${interestLabel(interest)}` : '',
+          code ? `كود الصورة: ${code}` : '',
+          message ? `التفاصيل: ${message}` : ''
+        ]
+      : [
+          'Quote request — PAJOMAR',
+          `Name: ${name}`,
+          email ? `Email: ${email}` : '',
+          phone ? `Phone: ${phone}` : '',
+          interest ? `Interest: ${interestLabel(interest)}` : '',
+          code ? `Image code: ${code}` : '',
+          message ? `Details: ${message}` : ''
+        ];
+    const text = lines.filter(Boolean).join('\n');
+    const url = `https://wa.me/${PAJOMAR.whatsapp}?text=${encodeURIComponent(text)}`;
+    window.open(url, '_blank', 'noopener');
+  }
+
+  function bindQuoteFormSubmit(form) {
     if (!form || form.dataset.waBound === '1') return;
     form.dataset.waBound = '1';
-    initQuoteProductCode();
-
     form.addEventListener('submit', (e) => {
       e.preventDefault();
-      const name = (form.querySelector('#name')?.value || '').trim();
-      const email = (form.querySelector('#email')?.value || '').trim();
-      const phone = (form.querySelector('#phone')?.value || '').trim();
-      const interest = form.querySelector('#interest')?.value || '';
-      const messageEl = form.querySelector('#message');
-      const message = (messageEl?.value || '').trim();
-      const code = (messageEl?.dataset.productCode || new URLSearchParams(window.location.search).get('code') || '').trim();
-      const lang = (typeof I18n !== 'undefined' && I18n.getLang) ? I18n.getLang() : 'en';
-      const lines = lang === 'ar'
-        ? [
-            'طلب عرض سعر — PAJOMAR',
-            `الاسم: ${name}`,
-            email ? `البريد: ${email}` : '',
-            phone ? `الهاتف: ${phone}` : '',
-            interest ? `الاهتمام: ${interestLabel(interest)}` : '',
-            code ? `كود الصورة: ${code}` : '',
-            message ? `التفاصيل: ${message}` : ''
-          ]
-        : [
-            'Quote request — PAJOMAR',
-            `Name: ${name}`,
-            email ? `Email: ${email}` : '',
-            phone ? `Phone: ${phone}` : '',
-            interest ? `Interest: ${interestLabel(interest)}` : '',
-            code ? `Image code: ${code}` : '',
-            message ? `Details: ${message}` : ''
-          ];
-      const text = lines.filter(Boolean).join('\n');
-      const url = `https://wa.me/${PAJOMAR.whatsapp}?text=${encodeURIComponent(text)}`;
-      window.open(url, '_blank', 'noopener');
+      submitQuoteForm(form);
     });
+  }
+
+  function quoteFormFieldsHTML(idPrefix) {
+    const p = idPrefix || 'quote';
+    return `
+      <div class="form-group">
+        <label for="${p}-name">${esc(t('contact.name'))}</label>
+        <input type="text" id="${p}-name" name="name" required placeholder="${esc(t('contact.namePlaceholder'))}">
+      </div>
+      <div class="form-group">
+        <label for="${p}-email">${esc(t('contact.emailLabel'))}</label>
+        <input type="email" id="${p}-email" name="email" required placeholder="${esc(t('contact.emailPlaceholder'))}">
+      </div>
+      <div class="form-group">
+        <label for="${p}-phone">${esc(t('contact.phoneLabel'))}</label>
+        <input type="tel" id="${p}-phone" name="phone" placeholder="01211925591">
+      </div>
+      <div class="form-group">
+        <label for="${p}-interest">${esc(t('contact.interest'))}</label>
+        <select id="${p}-interest" name="interest">
+          <option value="">${esc(t('contact.selectOption'))}</option>
+          <option value="curtains">${esc(t('contact.optCurtains'))}</option>
+          <option value="custom">${esc(t('contact.optCustom'))}</option>
+          <option value="consultation">${esc(t('contact.optConsultation'))}</option>
+          <option value="installation">${esc(t('contact.optInstallation'))}</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="${p}-message">${esc(t('contact.message'))}</label>
+        <textarea id="${p}-message" name="message" placeholder="${esc(t('contact.messagePlaceholder'))}"></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary" style="width:100%">${esc(t('contact.submit'))}</button>
+    `;
+  }
+
+  function openQuoteFormPopup(code) {
+    let overlay = document.getElementById('quote-form-popup');
+    if (!overlay) {
+      overlay = document.createElement('div');
+      overlay.id = 'quote-form-popup';
+      overlay.className = 'modal-overlay quote-form-overlay';
+      overlay.innerHTML = `
+        <div class="modal-content quote-form-popup" role="dialog" aria-modal="true" aria-labelledby="quote-popup-title">
+          <div class="quote-form-popup__head">
+            <h3 id="quote-popup-title" class="display-md"></h3>
+            <button type="button" class="search-close quote-form-popup__close" aria-label="Close">${ICONS.close}</button>
+          </div>
+          <p class="quote-form-popup__code" data-quote-code-label hidden></p>
+          <form class="contact-form quote-form-popup__form" id="quote-popup-form"></form>
+        </div>
+      `;
+      document.body.appendChild(overlay);
+      const form = overlay.querySelector('form');
+      const close = () => {
+        overlay.classList.remove('open');
+        document.body.style.overflow = '';
+      };
+      overlay._closeQuote = close;
+      bindQuoteFormSubmit(form);
+      form.addEventListener('submit', () => setTimeout(close, 120));
+      overlay.querySelector('.quote-form-popup__close').addEventListener('click', close);
+      overlay.addEventListener('click', (e) => { if (e.target === overlay) close(); });
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && overlay.classList.contains('open')) close();
+      });
+    }
+
+    const form = overlay.querySelector('form');
+    const title = overlay.querySelector('#quote-popup-title');
+    const codeLabel = overlay.querySelector('[data-quote-code-label]');
+    if (title) title.textContent = t('contact.formTitle');
+    form.innerHTML = quoteFormFieldsHTML('qp');
+    applyQuoteProductCode(form, code);
+
+    const safe = String(code || '').trim();
+    if (codeLabel) {
+      if (safe) {
+        codeLabel.hidden = false;
+        codeLabel.textContent = `${t('product.code')}: ${safe}`;
+      } else {
+        codeLabel.hidden = true;
+        codeLabel.textContent = '';
+      }
+    }
+
+    overlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    form.querySelector('[name="name"]')?.focus();
+  }
+
+  function initQuoteTriggers() {
+    if (document.body.dataset.quoteTriggers === '1') return;
+    document.body.dataset.quoteTriggers = '1';
+    document.addEventListener('click', (e) => {
+      const trigger = e.target.closest('[data-open-quote]');
+      if (!trigger) return;
+      e.preventDefault();
+      openQuoteFormPopup(trigger.getAttribute('data-open-quote') || '');
+    });
+  }
+
+  function initContactWhatsAppForm() {
+    const form = document.querySelector('.contact-form:not(.quote-form-popup__form)');
+    if (!form) return;
+    initQuoteProductCode();
+    bindQuoteFormSubmit(form);
+  }
+
+  function initQuoteProductCode() {
+    const params = new URLSearchParams(window.location.search);
+    const code = (params.get('code') || '').trim();
+    if (!code) return;
+    const form = document.querySelector('.contact-form:not(.quote-form-popup__form)');
+    if (!form) return;
+    applyQuoteProductCode(form, code);
   }
 
   function langSwitchHTML(extraClass) {
@@ -282,6 +420,250 @@
     return /\.(mp4|webm|mov|m4v)(\?|$)/i.test(String(url || ''));
   }
 
+  /* ── Zoomable image / video lightbox ── */
+  let lightboxState = null;
+
+  function ensureMediaLightbox() {
+    let root = document.getElementById('media-lightbox');
+    if (root) return root;
+
+    root = document.createElement('div');
+    root.id = 'media-lightbox';
+    root.className = 'media-lightbox';
+    root.setAttribute('role', 'dialog');
+    root.setAttribute('aria-modal', 'true');
+    root.setAttribute('aria-label', 'Media viewer');
+    root.innerHTML = `
+      <div class="media-lightbox__bar">
+        <span class="media-lightbox__meta" data-lb-meta></span>
+        <div class="media-lightbox__tools">
+          <button type="button" class="media-lightbox__btn" data-lb-zoom-out aria-label="Zoom out">−</button>
+          <button type="button" class="media-lightbox__btn" data-lb-zoom-in aria-label="Zoom in">+</button>
+          <button type="button" class="media-lightbox__btn" data-lb-close aria-label="Close">${ICONS.close}</button>
+        </div>
+      </div>
+      <div class="media-lightbox__stage" data-lb-stage>
+        <button type="button" class="media-lightbox__nav media-lightbox__nav--prev" data-lb-prev aria-label="Previous">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M15 6l-6 6 6 6"/></svg>
+        </button>
+        <div class="media-lightbox__frame" data-lb-frame></div>
+        <button type="button" class="media-lightbox__nav media-lightbox__nav--next" data-lb-next aria-label="Next">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 6l6 6-6 6"/></svg>
+        </button>
+      </div>
+    `;
+    document.body.appendChild(root);
+
+    const stage = root.querySelector('[data-lb-stage]');
+    const frame = root.querySelector('[data-lb-frame]');
+
+    const applyTransform = () => {
+      if (!lightboxState) return;
+      const { scale, x, y } = lightboxState;
+      frame.style.transform = `translate3d(${x}px, ${y}px, 0) scale(${scale})`;
+    };
+
+    const clampPan = () => {
+      if (!lightboxState) return;
+      const max = (lightboxState.scale - 1) * 220;
+      lightboxState.x = Math.max(-max, Math.min(max, lightboxState.x));
+      lightboxState.y = Math.max(-max, Math.min(max, lightboxState.y));
+    };
+
+    const setScale = (next, cx, cy) => {
+      if (!lightboxState) return;
+      const prev = lightboxState.scale;
+      const scale = Math.max(1, Math.min(4, next));
+      if (scale === 1) {
+        lightboxState.scale = 1;
+        lightboxState.x = 0;
+        lightboxState.y = 0;
+      } else {
+        const rect = stage.getBoundingClientRect();
+        const px = (cx != null ? cx : rect.left + rect.width / 2) - rect.left - rect.width / 2;
+        const py = (cy != null ? cy : rect.top + rect.height / 2) - rect.top - rect.height / 2;
+        const ratio = scale / prev;
+        lightboxState.x = px - (px - lightboxState.x) * ratio;
+        lightboxState.y = py - (py - lightboxState.y) * ratio;
+        lightboxState.scale = scale;
+        clampPan();
+      }
+      applyTransform();
+    };
+
+    const resetZoom = () => {
+      if (!lightboxState) return;
+      lightboxState.scale = 1;
+      lightboxState.x = 0;
+      lightboxState.y = 0;
+      applyTransform();
+    };
+
+    const renderSlide = () => {
+      if (!lightboxState) return;
+      const { items, index } = lightboxState;
+      const src = items[index];
+      const meta = root.querySelector('[data-lb-meta]');
+      const prevBtn = root.querySelector('[data-lb-prev]');
+      const nextBtn = root.querySelector('[data-lb-next]');
+      const zoomIn = root.querySelector('[data-lb-zoom-in]');
+      const zoomOut = root.querySelector('[data-lb-zoom-out]');
+      const video = isMediaVideo(src);
+      meta.textContent = items.length > 1 ? `${index + 1} / ${items.length}` : '';
+      prevBtn.hidden = items.length < 2;
+      nextBtn.hidden = items.length < 2;
+      zoomIn.hidden = video;
+      zoomOut.hidden = video;
+      frame.innerHTML = video
+        ? `<video src="${src}" controls playsinline controlslist="nodownload noplaybackrate"></video>`
+        : `<img src="${src}" alt="" draggable="false">`;
+      resetZoom();
+    };
+
+    const go = (delta) => {
+      if (!lightboxState || lightboxState.items.length < 2) return;
+      const len = lightboxState.items.length;
+      lightboxState.index = (lightboxState.index + delta + len) % len;
+      renderSlide();
+    };
+
+    const close = () => {
+      root.classList.remove('is-open');
+      document.body.style.overflow = '';
+      frame.innerHTML = '';
+      lightboxState = null;
+    };
+
+    root.querySelector('[data-lb-close]').addEventListener('click', close);
+    root.querySelector('[data-lb-prev]').addEventListener('click', (e) => {
+      e.stopPropagation();
+      go(-1);
+    });
+    root.querySelector('[data-lb-next]').addEventListener('click', (e) => {
+      e.stopPropagation();
+      go(1);
+    });
+    root.querySelector('[data-lb-zoom-in]').addEventListener('click', () => setScale((lightboxState?.scale || 1) + 0.4));
+    root.querySelector('[data-lb-zoom-out]').addEventListener('click', () => setScale((lightboxState?.scale || 1) - 0.4));
+
+    stage.addEventListener('wheel', (e) => {
+      if (!lightboxState || isMediaVideo(lightboxState.items[lightboxState.index])) return;
+      e.preventDefault();
+      const delta = e.deltaY < 0 ? 0.2 : -0.2;
+      setScale(lightboxState.scale + delta, e.clientX, e.clientY);
+    }, { passive: false });
+
+    let pointers = new Map();
+    let pinchStartDist = 0;
+    let pinchStartScale = 1;
+    let panStart = null;
+    let lastTap = 0;
+
+    const pointerDistance = () => {
+      const pts = [...pointers.values()];
+      if (pts.length < 2) return 0;
+      const dx = pts[0].x - pts[1].x;
+      const dy = pts[0].y - pts[1].y;
+      return Math.hypot(dx, dy);
+    };
+
+    stage.addEventListener('pointerdown', (e) => {
+      if (!lightboxState) return;
+      if (e.target.closest('.media-lightbox__nav')) return;
+      stage.setPointerCapture(e.pointerId);
+      pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+      if (pointers.size === 2) {
+        pinchStartDist = pointerDistance();
+        pinchStartScale = lightboxState.scale;
+        panStart = null;
+      } else if (pointers.size === 1) {
+        panStart = {
+          x: e.clientX,
+          y: e.clientY,
+          ox: lightboxState.x,
+          oy: lightboxState.y,
+          moved: false
+        };
+        stage.classList.add('is-panning');
+      }
+    });
+
+    stage.addEventListener('pointermove', (e) => {
+      if (!lightboxState || !pointers.has(e.pointerId)) return;
+      pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+      if (pointers.size === 2 && pinchStartDist) {
+        const dist = pointerDistance();
+        setScale(pinchStartScale * (dist / pinchStartDist));
+        return;
+      }
+      if (pointers.size === 1 && panStart && lightboxState.scale > 1) {
+        const dx = e.clientX - panStart.x;
+        const dy = e.clientY - panStart.y;
+        if (Math.abs(dx) > 3 || Math.abs(dy) > 3) panStart.moved = true;
+        lightboxState.x = panStart.ox + dx;
+        lightboxState.y = panStart.oy + dy;
+        clampPan();
+        applyTransform();
+      }
+    });
+
+    const endPointer = (e) => {
+      if (!pointers.has(e.pointerId)) return;
+      pointers.delete(e.pointerId);
+      if (pointers.size < 2) pinchStartDist = 0;
+      if (pointers.size === 0) {
+        stage.classList.remove('is-panning');
+        if (panStart && !panStart.moved && lightboxState && !isMediaVideo(lightboxState.items[lightboxState.index])) {
+          const now = Date.now();
+          if (now - lastTap < 320) {
+            if (lightboxState.scale > 1.05) resetZoom();
+            else setScale(2.2, e.clientX, e.clientY);
+            lastTap = 0;
+          } else {
+            lastTap = now;
+          }
+        }
+        panStart = null;
+      }
+    };
+
+    stage.addEventListener('pointerup', endPointer);
+    stage.addEventListener('pointercancel', endPointer);
+    stage.addEventListener('pointerleave', (e) => {
+      if (e.pointerType === 'mouse') endPointer(e);
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (!root.classList.contains('is-open')) return;
+      if (e.key === 'Escape') close();
+      if (e.key === 'ArrowLeft') go(-1);
+      if (e.key === 'ArrowRight') go(1);
+      if (e.key === '+' || e.key === '=') setScale((lightboxState?.scale || 1) + 0.3);
+      if (e.key === '-') setScale((lightboxState?.scale || 1) - 0.3);
+    });
+
+    root._lb = { renderSlide, close, setScale, resetZoom, applyTransform };
+    return root;
+  }
+
+  function openMediaLightbox(items, startIndex = 0) {
+    const list = (items || []).filter(Boolean);
+    if (!list.length) return;
+    const root = ensureMediaLightbox();
+    lightboxState = {
+      items: list,
+      index: Math.min(Math.max(startIndex, 0), list.length - 1),
+      scale: 1,
+      x: 0,
+      y: 0
+    };
+    root._lb.renderSlide();
+    root.classList.add('is-open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  window.openMediaLightbox = openMediaLightbox;
+
   function folderCodePrefix(folder) {
     const key = String(folder || '');
     if (key === 'شاتر' || key === 'شتر') return 'SHUTTER';
@@ -305,20 +687,6 @@
     const safeCode = String(code || '').trim();
     const q = safeCode ? `?code=${encodeURIComponent(safeCode)}` : '';
     return `contact.html${q}#quote`;
-  }
-
-  function initQuoteProductCode() {
-    const params = new URLSearchParams(window.location.search);
-    const code = (params.get('code') || '').trim();
-    if (!code) return;
-    const message = document.querySelector('#message');
-    if (!message) return;
-    const lang = (typeof I18n !== 'undefined' && I18n.getLang) ? I18n.getLang() : 'en';
-    const pref = lang === 'ar'
-      ? `أريد طلب المنتج\nكود الصورة: ${code}`
-      : `I'd like to order this product\nImage code: ${code}`;
-    if (!String(message.value || '').trim()) message.value = pref;
-    message.dataset.productCode = code;
   }
 
   function deptHref(dept) {
@@ -811,7 +1179,7 @@
         </div>
         <div class="product-card-info">
           <a href="${href}"><h3>${esc(code)}</h3></a>
-          <a href="${productQuoteUrl(code)}" class="product-card-request">${t('product.requestProduct')}</a>
+          <button type="button" class="product-card-request" data-open-quote="${esc(code)}">${t('product.requestProduct')}</button>
         </div>
       </article>
     `;
@@ -1059,7 +1427,7 @@
           <div class="product-meta-item"><label>${t('product.code')}</label><span>${esc(code)}</span></div>
         </div>
         <div class="product-actions">
-          <a href="${productQuoteUrl(code)}" class="btn btn-primary" id="product-order-btn">${t('product.requestProduct')}</a>
+          <button type="button" class="btn btn-primary" id="product-order-btn" data-open-quote="${esc(code)}">${t('product.requestProduct')}</button>
           <a href="${deptPage}?folder=${encodeURIComponent(product.imageFolder || product.id)}" class="btn btn-outline">${t(dept === 'shutters' ? 'nav.shutters' : 'nav.curtains')}</a>
         </div>
       </div>
@@ -1067,11 +1435,25 @@
 
     const mainWrap = container.querySelector('.product-gallery-main');
     const orderBtn = container.querySelector('#product-order-btn');
+    let currentSrc = uniqueGallery[activeIndex];
+
+    const openCurrentLightbox = () => {
+      openMediaLightbox(uniqueGallery, uniqueGallery.indexOf(currentSrc));
+    };
+
+    if (mainWrap) {
+      mainWrap.addEventListener('click', (e) => {
+        if (e.target.closest('video') || e.target.closest('button')) return;
+        openCurrentLightbox();
+      });
+    }
+
     container.querySelectorAll('.product-gallery-thumbs button').forEach(btn => {
       btn.addEventListener('click', () => {
         container.querySelectorAll('.product-gallery-thumbs button').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         const src = btn.dataset.src;
+        currentSrc = src;
         const nextCode = productImageCode({
           ...product,
           folderId: product.imageFolder || product.id,
@@ -1083,7 +1465,7 @@
         const codeEl = container.querySelector('.product-meta-item span');
         if (titleEl) titleEl.textContent = nextCode;
         if (codeEl) codeEl.textContent = nextCode;
-        if (orderBtn) orderBtn.href = productQuoteUrl(nextCode);
+        if (orderBtn) orderBtn.setAttribute('data-open-quote', nextCode);
         document.title = nextCode + ' — PAJOMAR';
       });
     });
@@ -1162,7 +1544,7 @@
           <p class="eyebrow">${esc(t('product.code'))}</p>
           <h2 style="margin:8px 0">${esc(code)}</h2>
           <a href="product.html?id=${encodeURIComponent(product.id)}&img=${imgIndex}" class="btn btn-primary">${t('product.viewProduct')}</a>
-          <a href="${productQuoteUrl(code)}" class="btn btn-outline" style="margin-inline-start:8px">${t('product.requestProduct')}</a>
+          <button type="button" class="btn btn-outline" style="margin-inline-start:8px" data-open-quote="${esc(code)}">${t('product.requestProduct')}</button>
         </div>
       </div>
     `;
@@ -2112,9 +2494,20 @@
     if (galleryEl) {
       const gallery = project.gallery || [];
       galleryEl.innerHTML = gallery.map((src, i) => `
-        <figure class="fade-in">
+        <figure class="fade-in" data-lb-index="${i}" role="button" tabindex="0" aria-label="${esc(project.name)} ${i + 1}">
           <img src="${src}" alt="${esc(project.name)} ${i + 1}" loading="${i < 2 ? 'eager' : 'lazy'}" decoding="async">
         </figure>`).join('');
+
+      const openAt = (index) => openMediaLightbox(gallery, index);
+      galleryEl.querySelectorAll('figure[data-lb-index]').forEach((fig) => {
+        fig.addEventListener('click', () => openAt(Number(fig.dataset.lbIndex) || 0));
+        fig.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            openAt(Number(fig.dataset.lbIndex) || 0);
+          }
+        });
+      });
     }
 
     if (relatedEl) {
@@ -2152,6 +2545,7 @@
     });
     fillContactExtras();
     initContactWhatsAppForm();
+    initQuoteTriggers();
     I18n.apply();
     setTimeout(() => initPageLoader(), 0);
 
