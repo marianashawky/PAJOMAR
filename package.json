@@ -1,0 +1,10 @@
+{
+  "name": "pajomar",
+  "private": true,
+  "description": "PAJOMAR static catalog — folder-based images",
+  "scripts": {
+    "sync": "node scripts/sync-images.js",
+    "sync:watch": "node scripts/watch-images.js",
+    "curtains:from-website2": "node scripts/apply-website2-curtains.js && node scripts/sync-images.js"
+  }
+}

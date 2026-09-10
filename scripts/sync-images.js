@@ -2,10 +2,13 @@
 /**
  * PAJOMAR — Image folder scanner
  *
- * Scans assets/images/ and writes js/images-manifest.js automatically.
- * Copy this script to any project — same folder layout works everywhere.
+ * Add or remove photos/videos inside assets/images/<folder>/
+ * then run this script (or: npm run sync).
  *
- * Usage: node scripts/sync-images.js
+ * Usage:
+ *   node scripts/sync-images.js
+ *   npm run sync
+ *   npm run sync:watch   (auto-sync while you edit folders)
  */
 'use strict';
 
@@ -20,22 +23,23 @@ const VIDEO_EXT = /\.(mp4|webm|mov|m4v)$/i;
 const MEDIA_EXT = /\.(jpe?g|png|webp|gif|avif|mp4|webm|mov|m4v)$/i;
 
 const DEFAULT_FOLDERS = [
-  'curtains',
-  'shutter-roller',
-  'shutter-zebra',
-  'shutter-wood',
-  'shutter-blackout',
-  'shutter-vertical',
+  'sheer',
+  'blackout',
+  'classic',
+  'modern',
+  'decorative',
+  'white',
+  'bespoke',
+  'bedroom',
+  'living',
+  'dining',
+  'office',
   'custom-pinch',
   'custom-wave',
   'custom-eyelet',
   'custom-roman',
   'custom-plain',
-  'acc-rods',
-  'acc-tracks',
-  'acc-tiebacks',
-  'acc-rings',
-  'acc-finials'
+  'window-view'
 ];
 
 function ensureDir(dir) {
@@ -45,7 +49,7 @@ function ensureDir(dir) {
 function listImages(dir) {
   if (!fs.existsSync(dir)) return [];
   return fs.readdirSync(dir)
-    .filter((f) => MEDIA_EXT.test(f))
+    .filter((f) => MEDIA_EXT.test(f) && !f.startsWith('.'))
     .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
 }
 
@@ -58,6 +62,18 @@ function migrateFlatImages() {
     const src = path.join(IMAGES_DIR, file);
     const dest = path.join(targetDir, file);
     if (!fs.existsSync(dest)) fs.renameSync(src, dest);
+  }
+}
+
+function loadPreviousManifest() {
+  if (!fs.existsSync(OUT_JS)) return {};
+  try {
+    const text = fs.readFileSync(OUT_JS, 'utf8');
+    const match = text.match(/const IMAGE_MANIFEST = (\{[\s\S]*\});/);
+    if (!match) return {};
+    return JSON.parse(match[1]);
+  } catch (e) {
+    return {};
   }
 }
 
@@ -97,10 +113,34 @@ function scanImages() {
   return manifest;
 }
 
+function summarizeDiff(prev, next) {
+  const prevKeys = new Set(Object.keys(prev));
+  const nextKeys = new Set(Object.keys(next));
+  const addedFolders = [...nextKeys].filter((k) => !prevKeys.has(k));
+  const removedFolders = [...prevKeys].filter((k) => !nextKeys.has(k));
+  let addedFiles = 0;
+  let removedFiles = 0;
+
+  for (const key of nextKeys) {
+    const before = new Set(prev[key] || []);
+    const after = next[key] || [];
+    after.forEach((f) => { if (!before.has(f)) addedFiles += 1; });
+  }
+  for (const key of prevKeys) {
+    const after = new Set(next[key] || []);
+    (prev[key] || []).forEach((f) => { if (!after.has(f)) removedFiles += 1; });
+  }
+
+  return { addedFolders, removedFolders, addedFiles, removedFiles };
+}
+
+const previous = loadPreviousManifest();
 const manifest = scanImages();
 const js = `/* AUTO-GENERATED — do not edit manually.
-   Add images/videos to assets/images/<folder-name>/ then run:
-   node scripts/sync-images.js */
+   Add or remove media in assets/images/<folder>/ then run:
+   npm run sync
+   (or: node scripts/sync-images.js)
+   Watch mode: npm run sync:watch */
 const IMAGE_MANIFEST = ${JSON.stringify(manifest, null, 2)};
 `;
 
@@ -111,4 +151,16 @@ const videos = Object.values(manifest).reduce(
   (n, files) => n + files.filter((f) => VIDEO_EXT.test(f)).length,
   0
 );
+const diff = summarizeDiff(previous, manifest);
+
 console.log(`✓ ${Object.keys(manifest).length} folders, ${total} media (${videos} videos) → js/images-manifest.js`);
+if (diff.addedFiles || diff.removedFiles || diff.addedFolders.length || diff.removedFolders.length) {
+  if (diff.addedFiles) console.log(`  + ${diff.addedFiles} file(s) added`);
+  if (diff.removedFiles) console.log(`  − ${diff.removedFiles} file(s) removed`);
+  if (diff.addedFolders.length) console.log(`  + folders: ${diff.addedFolders.join(', ')}`);
+  if (diff.removedFolders.length) console.log(`  − folders: ${diff.removedFolders.join(', ')}`);
+} else {
+  console.log('  (no file changes since last sync)');
+}
+console.log('  Codes: each photo = FOLDER-01, FOLDER-02… (from file name or order)');
+console.log('  After add/delete photos → npm run sync → Ctrl+F5');

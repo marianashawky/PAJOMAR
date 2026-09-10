@@ -1,5 +1,6 @@
 /* PAJOMAR — Catalog & filters driven only by assets/images folders
-   Add photos to a folder, then run: node scripts/sync-images.js
+   Add or remove photos in a folder, then run: npm run sync
+   Watch while editing: npm run sync:watch
    See assets/images/README.txt */
 
 const FOLDER_LABELS = {
@@ -12,6 +13,8 @@ const FOLDER_LABELS = {
   bedroom: 'Bedroom',
   dining: 'Dining',
   office: 'Office',
+  white: 'White',
+  bespoke: 'Bespoke',
   reception: 'Reception',
   'shutter-roller': 'Roller',
   'shutter-zebra': 'Zebra',
@@ -41,7 +44,6 @@ const SKIP_FOLDERS = new Set([
   'صور تسويق',
   'window-view',
   'curtains',
-  'white',
   'custom',
   'custom-living',
   'custom-bedroom',
@@ -52,10 +54,13 @@ const SKIP_FOLDERS = new Set([
   'dept-custom',
   'dept-accessories',
   'مشاريع صغيره',
-  'ريفيوهات'
+  'ريفيوهات',
+  'ويب سايت 2',
+  'reception'
 ]);
 
 const SMALL_PROJECTS_PREFIX = 'مشاريع صغيره/';
+const WEBSITE2_PREFIX = 'ويب سايت 2/';
 const SHUTTER_GALLERY_FOLDER = ImageLib.has('شاتر') ? 'شاتر' : (ImageLib.has('شتر') ? 'شتر' : '');
 const ACCESSORY_GALLERY_CANDIDATES = ['اكسسوارات', 'إكسسوارات', 'تكسسورات'];
 const ACCESSORY_GALLERY_FOLDER = ACCESSORY_GALLERY_CANDIDATES.find((name) => ImageLib.has(name)) || '';
@@ -109,7 +114,9 @@ function folderGallery(folder) {
   if (ACCESSORY_GALLERY_FOLDER && folder === ACCESSORY_GALLERY_FOLDER) {
     files = sortAccessoryFiles(files);
   }
-  return files.map((file) => mediaUrl(folder, file));
+  return files
+    .map((file) => mediaUrl(folder, file))
+    .filter((url) => url && !url.includes('_fallback'));
 }
 
 function folderCover(folder) {
@@ -124,7 +131,7 @@ const DEPT_PAGES = {
   accessories: 'accessories.html'
 };
 
-/** Curtain shop: 5 type lookbooks + 5 room lookbooks */
+/** Curtain shop lookbooks — sourced from assets/images/ويب سايت 2 */
 const CURTAIN_TYPE_FOLDERS = new Set([
   'sheer',
   'blackout',
@@ -135,7 +142,8 @@ const CURTAIN_TYPE_FOLDERS = new Set([
   'living',
   'dining',
   'office',
-  'reception'
+  'white',
+  'bespoke'
 ]);
 
 const CURTAIN_FOLDER_ORDER = [
@@ -144,16 +152,18 @@ const CURTAIN_FOLDER_ORDER = [
   'classic',
   'modern',
   'decorative',
+  'white',
+  'bespoke',
   'bedroom',
   'living',
   'dining',
-  'office',
-  'reception'
+  'office'
 ];
 
 function folderDepartment(folder) {
   if (SKIP_FOLDERS.has(folder)) return '';
   if (String(folder).startsWith(SMALL_PROJECTS_PREFIX)) return '';
+  if (String(folder).startsWith(WEBSITE2_PREFIX) || folder === 'ويب سايت 2') return '';
   if (CURTAIN_TYPE_FOLDERS.has(folder)) return 'curtains';
   /* Old shutter-* lookbooks retired — use شاتر gallery only */
   if (String(folder).startsWith('shutter-')) return '';
@@ -328,11 +338,11 @@ PAJOMAR.deptCovers = {
   curtains: ImageLib.url('modern', 3) || ImageLib.url('sheer', 1) || ImageLib.url('sheer'),
   shutters: SHUTTER_GALLERY_FOLDER
     ? ImageLib.url(SHUTTER_GALLERY_FOLDER)
-    : ImageLib.url('shutter-vertical'),
+    : ImageLib.url('blackout'),
   custom: ImageLib.url('custom-pinch'),
   accessories: ACCESSORY_GALLERY_FOLDER
     ? folderCover(ACCESSORY_GALLERY_FOLDER)
-    : ImageLib.url('acc-rods')
+    : ImageLib.url('decorative')
 };
 
 PAJOMAR.folders = PAJOMAR.departments.curtains;
@@ -384,7 +394,10 @@ PAJOMAR.heroSlides = [
   ImageLib.url('dining', 0),
   ImageLib.url('blackout', 0),
   ImageLib.url('classic', 0),
-  ImageLib.url('reception', 0)
+  ImageLib.url('white', 0),
+  ImageLib.url('bespoke', 0),
+  ImageLib.url('decorative', 0),
+  ImageLib.url('office', 0)
 ].filter((src, i, arr) => src && !src.includes('_fallback') && arr.indexOf(src) === i);
 if (!PAJOMAR.heroSlides.length) {
   PAJOMAR.heroSlides = catalogFolders('curtains').flatMap((folder) => ImageLib.getAll(folder));
@@ -444,18 +457,22 @@ PAJOMAR.homeMarketing = (() => {
 })();
 
 function listingFromProducts(products) {
-  return products.flatMap((product) =>
-    (product.gallery.length ? product.gallery : [product.image]).map((url, index) => ({
+  return products.flatMap((product) => {
+    const gallery = (product.gallery || []).filter((url) => url && !String(url).includes('_fallback'));
+    if (!gallery.length && product.image && !String(product.image).includes('_fallback')) {
+      gallery.push(product.image);
+    }
+    return gallery.map((url, index) => ({
       ...product,
       id: `${product.id}-${String(index + 1).padStart(2, '0')}`,
       folderId: product.id,
       department: folderDepartment(product.id),
       name: `${product.name} ${index + 1}`,
       image: url,
-      imageSecondary: product.gallery[(index + 1) % product.gallery.length] || url,
+      imageSecondary: gallery[(index + 1) % gallery.length] || url,
       galleryIndex: index
-    }))
-  );
+    }));
+  });
 }
 
 /** Flat list of every image across folders (for listing grid) */

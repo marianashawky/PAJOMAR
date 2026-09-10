@@ -380,7 +380,7 @@
       office: 'room.office', reception: 'room.reception',
       sheer: 'type.sheer', blackout: 'type.blackout', decorative: 'type.decorative',
       classic: 'type.classic', modern: 'type.modern', custom: 'type.custom',
-      white: 'color.white',
+      white: 'color.white', bespoke: 'type.bespoke',
       'shutter-roller': 'dept.shutterRoller',
       'shutter-zebra': 'dept.shutterZebra',
       'shutter-wood': 'dept.shutterWood',
@@ -666,9 +666,32 @@
 
   function folderCodePrefix(folder) {
     const key = String(folder || '');
+    const map = {
+      sheer: 'SHEER',
+      blackout: 'BLACKOUT',
+      classic: 'CLASSIC',
+      modern: 'MODERN',
+      decorative: 'DECO',
+      white: 'WHITE',
+      bespoke: 'BESPOKE',
+      bedroom: 'BED',
+      living: 'LIVING',
+      dining: 'DINING',
+      office: 'OFFICE',
+      'custom-pinch': 'PINCH',
+      'custom-wave': 'WAVE',
+      'custom-eyelet': 'EYELET',
+      'custom-roman': 'ROMAN',
+      'custom-plain': 'PLAIN',
+      'شاتر': 'SHUTTER',
+      'شتر': 'SHUTTER',
+      'اكسسوارات': 'ACC',
+      'إكسسوارات': 'ACC',
+      'تكسسورات': 'ACC'
+    };
+    if (map[key]) return map[key];
     if (key === 'شاتر' || key === 'شتر') return 'SHUTTER';
-    if (key === 'اكسسوارات' || key === 'إكسسوارات' || key === 'تكسسورات') return 'ACC';
-    return key;
+    return key.replace(/[^\w\u0600-\u06FF-]+/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '') || 'IMG';
   }
 
   function productImageCode(product) {
@@ -676,11 +699,26 @@
     const folder = String(product.folderId || product.imageFolder || product.id || 'img')
       .replace(/-\d{2}$/, '');
     const stem = imageFileStem(product.image);
-    const fromIndex = product.galleryIndex != null
+    const fromStem = String(stem || '').match(/^(\d+)/);
+    const fromIndex = product.galleryIndex != null && Number.isFinite(product.galleryIndex)
       ? String(product.galleryIndex + 1).padStart(2, '0')
       : '';
-    const num = fromIndex || (/^\d+$/.test(stem) ? stem.padStart(2, '0') : '01');
+    const num = fromStem
+      ? String(fromStem[1]).padStart(2, '0')
+      : (fromIndex || '01');
     return `${folderCodePrefix(folder)}-${num}`.replace(/\s+/g, '-').toUpperCase();
+  }
+
+  function hideBrokenMedia(el) {
+    if (!el || el.dataset.mediaGone === '1') return;
+    el.dataset.mediaGone = '1';
+    const card = el.closest('.product-card, .home-room-card, .home-cat-card, .project-tile, .consult-card, .about-gallery figure, .project-gallery figure');
+    if (card) {
+      card.remove();
+      return;
+    }
+    el.style.display = 'none';
+    el.setAttribute('hidden', '');
   }
 
   function productQuoteUrl(code) {
@@ -1787,11 +1825,12 @@
         { folder: 'classic', name: t('type.classic') },
         { folder: 'modern', name: t('type.modern') },
         { folder: 'decorative', name: t('type.decorative') },
+        { folder: 'white', name: t('color.white') },
+        { folder: 'bespoke', name: t('type.bespoke') },
         { folder: 'bedroom', name: t('room.bedroom') },
         { folder: 'living', name: t('room.livingRoom') },
         { folder: 'dining', name: t('room.diningRoom') },
-        { folder: 'office', name: t('room.office') },
-        { folder: 'reception', name: t('room.reception') }
+        { folder: 'office', name: t('room.office') }
       ].filter((r) => ImageLib.has(r.folder));
       /* Always pick a real folder photo — do not depend on leftover unique pool */
       const roomCards = rooms.map((r) => {
@@ -2550,10 +2589,10 @@
     setTimeout(() => initPageLoader(), 0);
 
     document.addEventListener('error', (e) => {
-      if (e.target.tagName === 'IMG' && !e.target.dataset.fallback) {
-        e.target.dataset.fallback = '1';
-        e.target.src = curtainImg('hero');
-      }
+      const el = e.target;
+      if (!el || (el.tagName !== 'IMG' && el.tagName !== 'VIDEO')) return;
+      if (el.dataset.mediaGone === '1') return;
+      hideBrokenMedia(el);
     }, true);
 
     I18n.onChange(() => {

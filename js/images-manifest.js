@@ -1,52 +1,59 @@
 /* AUTO-GENERATED — do not edit manually.
-   Add images/videos to assets/images/<folder-name>/ then run:
-   node scripts/sync-images.js */
+   Add or remove media in assets/images/<folder>/ then run:
+   npm run sync
+   (or: node scripts/sync-images.js)
+   Watch mode: npm run sync:watch */
 const IMAGE_MANIFEST = {
-  "acc-finials": [
-    "01.jpg",
-    "02.jpg",
-    "03.jpg"
-  ],
-  "acc-rings": [
-    "01.jpg",
-    "02.jpg",
-    "03.jpg"
-  ],
-  "acc-rods": [
-    "01.jpg",
-    "02.jpg",
-    "03.jpg"
-  ],
-  "acc-tiebacks": [
-    "01.jpg",
-    "02.jpg",
-    "03.jpg"
-  ],
-  "acc-tracks": [
-    "01.jpg",
-    "02.jpg",
-    "03.jpg"
-  ],
   "bedroom": [
-    "01.jpg",
-    "02.jpg",
-    "03.jpg",
-    "04.jpg"
+    "01.jpeg",
+    "02.jpeg",
+    "03.jpeg",
+    "04.jpeg",
+    "05.jpeg",
+    "06.jpeg",
+    "07.jpeg",
+    "08.jpeg",
+    "09.jpeg",
+    "10.jpeg",
+    "11.jpeg",
+    "12.jpeg"
+  ],
+  "bespoke": [
+    "01.jpeg",
+    "02.jpeg",
+    "03.jpeg",
+    "04.jpeg",
+    "05.jpeg",
+    "06.jpeg",
+    "07.jpeg",
+    "08.jpeg",
+    "09.jpeg",
+    "10.jpeg"
   ],
   "blackout": [
-    "01.jpg",
-    "02.jpg",
-    "03.jpg",
-    "04.jpg"
+    "01.jpeg",
+    "02.jpeg",
+    "03.jpeg",
+    "04.jpeg",
+    "06.jpeg",
+    "07.jpeg",
+    "08.jpeg",
+    "09.jpeg",
+    "10.jpeg",
+    "11.jpeg",
+    "12.jpeg"
   ],
   "classic": [
-    "01.jpg",
-    "02.jpg",
-    "03.jpg",
-    "04.jpg"
-  ],
-  "custom": [
-    "03.jpg"
+    "01.jpeg",
+    "02.jpeg",
+    "03.jpeg",
+    "04.jpeg",
+    "05.jpeg",
+    "06.jpeg",
+    "07.jpeg",
+    "08.jpeg",
+    "09.jpeg",
+    "10.jpeg"
   ],
   "custom-eyelet": [
     "01.jpg",
@@ -69,75 +76,89 @@ const IMAGE_MANIFEST = {
     "03.jpg"
   ],
   "custom-wave": [
-    "01.jpg",
-    "02.jpg",
-    "03.jpg"
+    "01-room.jpg",
+    "02-detail.jpg",
+    "03-header.jpg"
   ],
   "decorative": [
-    "01.jpg",
-    "02.jpg",
-    "03.jpg",
-    "04.jpg"
+    "01.jpeg",
+    "02.jpeg",
+    "03.jpeg",
+    "04.jpeg",
+    "05.jpeg",
+    "06.jpeg",
+    "07.jpeg",
+    "08.jpeg",
+    "09.jpeg",
+    "10.jpeg",
+    "11.jpeg",
+    "12.jpeg",
+    "13.jpeg"
   ],
   "dining": [
-    "01.jpg",
-    "02.jpg",
-    "03.jpg",
-    "04.jpg"
+    "01.jpeg",
+    "02.jpeg",
+    "03.jpeg",
+    "04.jpeg",
+    "05.jpeg",
+    "06.jpeg"
   ],
   "living": [
-    "01.jpg",
-    "02.jpg",
-    "03.jpg",
-    "04.jpg"
+    "01.jpeg",
+    "02.jpeg",
+    "03.jpeg",
+    "04.jpeg",
+    "05.jpeg",
+    "06.jpeg",
+    "07.jpeg",
+    "08.jpeg",
+    "09.jpeg"
   ],
   "modern": [
-    "01.jpg",
-    "02.jpg",
-    "03.jpg",
-    "04.jpg"
+    "01.jpeg",
+    "02.jpeg",
+    "03.jpeg",
+    "04.jpeg",
+    "05.jpeg",
+    "06.jpeg",
+    "07.jpeg",
+    "08.jpeg",
+    "09.jpeg",
+    "10.jpeg",
+    "11.jpeg",
+    "12.jpeg"
   ],
   "office": [
-    "01.jpg",
-    "02.jpg",
-    "03.jpg",
-    "04.jpg"
-  ],
-  "reception": [
-    "01.jpg",
-    "02.jpg",
-    "03.jpg",
-    "04.jpg"
+    "01.jpeg",
+    "02.jpeg",
+    "03.jpeg",
+    "04.jpeg",
+    "05.jpeg"
   ],
   "sheer": [
-    "01.jpg",
-    "02.jpg",
-    "03.jpg"
+    "01.jpeg",
+    "02.jpeg",
+    "03.jpeg",
+    "04.jpeg",
+    "05.jpeg",
+    "06.jpeg",
+    "07.jpeg",
+    "08.jpeg",
+    "09.jpeg",
+    "10.jpeg",
+    "11.jpeg"
   ],
-  "shutter-blackout": [
-    "01.jpg",
-    "02.jpg",
-    "03.jpg"
-  ],
-  "shutter-roller": [
-    "01.jpg",
-    "02.jpg",
-    "03.jpg"
-  ],
-  "shutter-vertical": [
-    "01.jpg",
-    "02.jpg",
-    "03.jpg"
-  ],
-  "shutter-wood": [
-    "01.jpg",
-    "02.jpg",
-    "03.jpg"
-  ],
-  "shutter-zebra": [
-    "01.jpg",
-    "02.jpg",
-    "03.jpg"
+  "white": [
+    "01.jpeg",
+    "02.jpeg",
+    "03.jpeg",
+    "04.jpeg",
+    "05.jpeg",
+    "06.jpeg",
+    "07.jpeg",
+    "08.jpeg",
+    "09.jpeg",
+    "10.jpeg"
   ],
   "window-view": [
     "window-view.jpg"
@@ -146,16 +167,13 @@ const IMAGE_MANIFEST = {
     "WhatsApp Image 2026-09-01 at 10.40.11 AM (1).jpeg",
     "WhatsApp Image 2026-09-01 at 10.40.11 AM (2).jpeg",
     "WhatsApp Image 2026-09-01 at 10.40.11 AM (3).jpeg",
-    "WhatsApp Image 2026-09-01 at 10.40.11 AM (4).jpeg",
     "WhatsApp Image 2026-09-01 at 10.40.11 AM.jpeg",
-    "WhatsApp Image 2026-09-01 at 10.40.12 AM (1).jpeg",
     "WhatsApp Image 2026-09-01 at 10.40.12 AM (2).jpeg",
     "WhatsApp Image 2026-09-01 at 10.40.12 AM (3).jpeg",
     "WhatsApp Image 2026-09-01 at 10.40.12 AM (4).jpeg",
     "WhatsApp Image 2026-09-01 at 10.40.12 AM (5).jpeg",
     "WhatsApp Image 2026-09-01 at 10.40.12 AM (6).jpeg",
     "WhatsApp Image 2026-09-01 at 10.40.12 AM (7).jpeg",
-    "WhatsApp Image 2026-09-01 at 10.40.12 AM.jpeg",
     "WhatsApp Image 2026-09-01 at 10.40.13 AM (1).jpeg",
     "WhatsApp Image 2026-09-01 at 10.40.13 AM (2).jpeg",
     "WhatsApp Image 2026-09-01 at 10.40.13 AM (3).jpeg",
@@ -174,7 +192,6 @@ const IMAGE_MANIFEST = {
     "WhatsApp Image 2026-09-01 at 10.40.15 AM (1).jpeg",
     "WhatsApp Image 2026-09-01 at 10.40.15 AM (2).jpeg",
     "WhatsApp Image 2026-09-01 at 10.40.15 AM (3).jpeg",
-    "WhatsApp Image 2026-09-01 at 10.40.15 AM (4).jpeg",
     "WhatsApp Image 2026-09-01 at 10.40.15 AM (5).jpeg",
     "WhatsApp Image 2026-09-01 at 10.40.15 AM (6).jpeg",
     "WhatsApp Image 2026-09-01 at 10.40.15 AM (7).jpeg",
@@ -245,12 +262,6 @@ const IMAGE_MANIFEST = {
     "WhatsApp Video 2026-09-01 at 10.34.45 AM.mp4",
     "WhatsApp Video 2026-09-01 at 10.36.34 AM.mp4",
     "WhatsApp Video 2026-09-01 at 10.36.38 AM.mp4"
-  ],
-  "صور تسويق": [
-    "images (1).jpg",
-    "images (2).jpg",
-    "images (3).jpg",
-    "images.jpg"
   ],
   "مشاريع صغيره/الجونه": [
     "8ce11d12-053a-49e3-8549-b763bb9f7a84.jpg",

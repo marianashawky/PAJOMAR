@@ -1,13 +1,28 @@
-PAJOMAR — Image Folders
-========================
+PAJOMAR — إدارة صور الفولدرات
+================================
 
-  assets/images/
-    bedroom/ living/ dining/ office/ reception/
-      → 4 unique photos each (curtains shop — 5 room lookbooks)
-    shutter-roller/ shutter-zebra/ shutter-wood/ shutter-blackout/ shutter-vertical/
-    custom-pinch/ custom-wave/ custom-eyelet/ custom-roman/ custom-plain/
-    acc-rods/ acc-tracks/ acc-tiebacks/ acc-rings/ acc-finials/
-    window-view/ → drape demo background
+إضافة صورة:
+  1) حطّي الملف في الفولدر (مثال: assets/images/sheer/)
+  2) npm run sync
+  3) Ctrl+F5
+  → هتظهر في الموقع بكود ورقم (مثال: SHEER-13)
 
-After adding photos, run:  node scripts/sync-images.js
-Refresh curtain rooms:     node scripts/restore-curtain-folders.js
+حذف صورة:
+  1) امسحي الملف من الفولدر
+  2) npm run sync
+  3) Ctrl+F5
+  → الصورة تختفي من الموقع (مش هتسيب مكان فاضي)
+
+الكود:
+  اسم الفولدر + رقم الصورة
+  sheer/01.jpeg → SHEER-01
+  blackout/12.jpeg → BLACKOUT-12
+  اكسسوارات/… → ACC-01, ACC-02…
+
+لو سمّيتي الملفات 01 و 02 و 03 الرقم يثبت من الاسم.
+لو الاسم عشوائي، الرقم = ترتيب الظهور بعد الـ sync.
+
+مراقبة تلقائية أثناء التعديل:
+  npm run sync:watch
+
+لا تعدّلي js/images-manifest.js يدوي.
